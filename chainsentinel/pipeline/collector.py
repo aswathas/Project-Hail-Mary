@@ -14,12 +14,14 @@ def _hex_to_int(val):
 
 
 def _extract_hash(val):
-    """Extract hex string from various web3 return types."""
+    """Extract hex string from various web3 return types. Always returns 0x-prefixed."""
     if hasattr(val, "hex"):
-        return val.hex() if not val.hex().startswith("0x") else val.hex()
+        h = val.hex()
+        return h if h.startswith("0x") else "0x" + h
     if isinstance(val, bytes):
         return "0x" + val.hex()
-    return str(val)
+    s = str(val)
+    return s if s.startswith("0x") else "0x" + s
 
 
 async def collect_transaction(w3, tx_hash: str, include_trace: bool = False) -> dict:
@@ -35,9 +37,9 @@ async def collect_transaction(w3, tx_hash: str, include_trace: bool = False) -> 
     for log in receipt.get("logs", []):
         logs.append({
             "log_index": _hex_to_int(log.get("logIndex", log.get("log_index", 0))),
-            "address": str(log.get("address", "")),
+            "address": _extract_hash(log.get("address", "")),
             "topics": [_extract_hash(t) for t in log.get("topics", [])],
-            "data": str(log.get("data", "0x")),
+            "data": _extract_hash(log.get("data", "0x")),
         })
 
     doc = {
@@ -45,13 +47,13 @@ async def collect_transaction(w3, tx_hash: str, include_trace: bool = False) -> 
         "block_number": _hex_to_int(tx.get("blockNumber", tx.get("block_number", 0))),
         "block_timestamp": _hex_to_int(block.get("timestamp", 0)),
         "tx_index": _hex_to_int(tx.get("transactionIndex", tx.get("transaction_index", 0))),
-        "from": str(tx.get("from", "")),
-        "to": str(tx.get("to", "")),
+        "from": _extract_hash(tx.get("from", "")),
+        "to": _extract_hash(tx.get("to", "") or ""),
         "value": _hex_to_int(tx.get("value", 0)),
         "gas": _hex_to_int(tx.get("gas", 0)),
         "gas_price": _hex_to_int(tx.get("gasPrice", tx.get("gas_price", 0))),
         "nonce": _hex_to_int(tx.get("nonce", 0)),
-        "input": str(tx.get("input", "0x")),
+        "input": _extract_hash(tx.get("input", "0x")),
         "status": _hex_to_int(receipt.get("status", 0)),
         "gas_used": _hex_to_int(receipt.get("gasUsed", receipt.get("gas_used", 0))),
         "cumulative_gas_used": _hex_to_int(
@@ -96,9 +98,9 @@ async def collect_block_range(
                     "log_index": _hex_to_int(
                         log.get("logIndex", log.get("log_index", 0))
                     ),
-                    "address": str(log.get("address", "")),
+                    "address": _extract_hash(log.get("address", "")),
                     "topics": [_extract_hash(t) for t in log.get("topics", [])],
-                    "data": str(log.get("data", "0x")),
+                    "data": _extract_hash(log.get("data", "0x")),
                 })
 
             doc = {
@@ -108,15 +110,15 @@ async def collect_block_range(
                 "tx_index": _hex_to_int(
                     tx.get("transactionIndex", tx.get("transaction_index", 0))
                 ),
-                "from": str(tx.get("from", "")),
-                "to": str(tx.get("to", "")),
+                "from": _extract_hash(tx.get("from", "")),
+                "to": _extract_hash(tx.get("to", "") or ""),
                 "value": _hex_to_int(tx.get("value", 0)),
                 "gas": _hex_to_int(tx.get("gas", 0)),
                 "gas_price": _hex_to_int(
                     tx.get("gasPrice", tx.get("gas_price", 0))
                 ),
                 "nonce": _hex_to_int(tx.get("nonce", 0)),
-                "input": str(tx.get("input", "0x")),
+                "input": _extract_hash(tx.get("input", "0x")),
                 "status": _hex_to_int(receipt.get("status", 0)),
                 "gas_used": _hex_to_int(
                     receipt.get("gasUsed", receipt.get("gas_used", 0))
@@ -158,9 +160,9 @@ async def collect_logs(w3, from_block: int, to_block: int) -> list[dict]:
             "tx_hash": _extract_hash(log.get("transactionHash", log.get("transaction_hash", ""))),
             "block_number": _hex_to_int(log.get("blockNumber", log.get("block_number", 0))),
             "log_index": _hex_to_int(log.get("logIndex", log.get("log_index", 0))),
-            "address": str(log.get("address", "")),
+            "address": _extract_hash(log.get("address", "")),
             "topics": [_extract_hash(t) for t in log.get("topics", [])],
-            "data": str(log.get("data", "0x")),
+            "data": _extract_hash(log.get("data", "0x")),
         }
         for log in raw_logs
     ]
