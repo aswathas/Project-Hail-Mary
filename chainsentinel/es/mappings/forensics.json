@@ -84,6 +84,11 @@
       "depth_spread": { "type": "integer" },
       "call_count": { "type": "integer" },
       "bytecode_size_bytes": { "type": "integer" },
+      "tx_index": { "type": "integer" },
+      "tx_type": { "type": "keyword" },
+      "is_deployment": { "type": "boolean" },
+      "is_first_interaction": { "type": "boolean" },
+      "is_contract_call": { "type": "boolean" },
 
       "event_name": { "type": "keyword" },
       "event_args": { "type": "flattened" },

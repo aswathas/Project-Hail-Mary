@@ -41,6 +41,9 @@
       "trace_depth": { "type": "integer" },
       "trace_calls": { "type": "flattened" },
 
+      "function_name": { "type": "keyword" },
+      "function_args": { "type": "flattened" },
+
       "raw_extra": { "type": "flattened" }
     }
   }
