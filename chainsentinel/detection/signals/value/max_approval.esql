@@ -1,0 +1,10 @@
+-- signal: max_approval
+-- severity: MED
+-- score: 0.6
+-- description: Detects ERC20 approvals set to max uint256 (unlimited spending)
+FROM forensics
+| WHERE layer == "decoded" AND event_name == "Approval"
+| WHERE amount_decimal > 1e+70
+| STATS approval_count = COUNT(*) BY owner_address, spender_address, token_address, tx_hash, block_number
+| SORT approval_count DESC
+| LIMIT 100

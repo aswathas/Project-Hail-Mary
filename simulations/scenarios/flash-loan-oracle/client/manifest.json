@@ -1,0 +1,30 @@
+{
+  "investigation_name": "Flash Loan Oracle Manipulation",
+  "chain_id": 31337,
+  "rpc_url": "http://127.0.0.1:8545",
+  "contracts": [
+    {
+      "address": "FILL_AFTER_DEPLOY",
+      "name": "LendingPool",
+      "role": "victim",
+      "abi_file": "abis/LendingPool.json"
+    },
+    {
+      "address": "FILL_AFTER_DEPLOY",
+      "name": "SimpleOracle",
+      "role": "dependency",
+      "abi_file": "abis/SimpleOracle.json"
+    },
+    {
+      "address": "FILL_AFTER_DEPLOY",
+      "name": "MockUniswapPool",
+      "role": "dependency",
+      "abi_file": "abis/MockUniswapPool.json"
+    }
+  ],
+  "block_range": {
+    "from": "FILL_AFTER_DEPLOY",
+    "to": "FILL_AFTER_DEPLOY"
+  },
+  "notes": "Our lending pool was drained. Borrowers took out loans far exceeding their collateral value. We suspect price manipulation."
+}

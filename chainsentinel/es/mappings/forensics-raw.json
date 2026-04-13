@@ -1,0 +1,46 @@
+{
+  "settings": {
+    "number_of_shards": 1,
+    "number_of_replicas": 0,
+    "index.mapping.total_fields.limit": 500
+  },
+  "mappings": {
+    "dynamic": "strict",
+    "properties": {
+      "investigation_id": { "type": "keyword" },
+      "chain_id": { "type": "integer" },
+      "@timestamp": { "type": "date" },
+      "block_number": { "type": "long" },
+      "block_datetime": { "type": "date" },
+      "block_timestamp_raw": { "type": "long" },
+      "tx_hash": { "type": "keyword" },
+      "doc_type": { "type": "keyword" },
+
+      "tx_index": { "type": "integer" },
+      "from_address": { "type": "keyword" },
+      "to_address": { "type": "keyword" },
+      "value_eth": { "type": "double" },
+      "value_wei": { "type": "keyword" },
+      "gas": { "type": "long" },
+      "gas_price": { "type": "long" },
+      "gas_used": { "type": "long" },
+      "cumulative_gas_used": { "type": "long" },
+      "nonce": { "type": "long" },
+      "input": { "type": "keyword", "index": false, "doc_values": false },
+      "success": { "type": "boolean" },
+      "contract_address": { "type": "keyword" },
+      "is_contract_to": { "type": "boolean" },
+
+      "log_index": { "type": "integer" },
+      "log_address": { "type": "keyword" },
+      "topics": { "type": "keyword" },
+      "data": { "type": "keyword", "index": false, "doc_values": false },
+
+      "trace_type": { "type": "keyword" },
+      "trace_depth": { "type": "integer" },
+      "trace_calls": { "type": "flattened" },
+
+      "raw_extra": { "type": "flattened" }
+    }
+  }
+}

@@ -1,0 +1,57 @@
+[
+  {
+    "inputs": [{ "name": "_token", "type": "address" }],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "inputs": [{ "name": "tokenAmount", "type": "uint256" }],
+    "name": "addLiquidity",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "name": "tokenAmount", "type": "uint256" }],
+    "name": "swapTokenForETH",
+    "outputs": [{ "name": "ethOut", "type": "uint256" }],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "tokenReserve",
+    "outputs": [{ "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "ethReserve",
+    "outputs": [{ "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      { "indexed": true, "name": "trader", "type": "address" },
+      { "indexed": false, "name": "tokenIn", "type": "address" },
+      { "indexed": false, "name": "tokenOut", "type": "address" },
+      { "indexed": false, "name": "amountIn", "type": "uint256" },
+      { "indexed": false, "name": "amountOut", "type": "uint256" }
+    ],
+    "name": "Swap",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      { "indexed": true, "name": "provider", "type": "address" },
+      { "indexed": false, "name": "tokenAmount", "type": "uint256" },
+      { "indexed": false, "name": "ethAmount", "type": "uint256" }
+    ],
+    "name": "AddLiquidity",
+    "type": "event"
+  }
+]

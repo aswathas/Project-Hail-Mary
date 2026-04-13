@@ -1,0 +1,18 @@
+{
+  "investigation_name": "Reentrancy Drain",
+  "chain_id": 31337,
+  "rpc_url": "http://127.0.0.1:8545",
+  "contracts": [
+    {
+      "address": "FILL_AFTER_DEPLOY",
+      "name": "VulnerableVault",
+      "role": "victim",
+      "abi_file": "abis/VulnerableVault.json"
+    }
+  ],
+  "block_range": {
+    "from": "FILL_AFTER_DEPLOY",
+    "to": "FILL_AFTER_DEPLOY"
+  },
+  "notes": "Our ETH vault was drained. We noticed all user deposits disappeared. Please investigate."
+}

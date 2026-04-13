@@ -1,0 +1,11 @@
+-- signal: burst_transactions
+-- severity: MED
+-- score: 0.6
+-- description: Detects wallets sending 5+ transactions within a 3-block window
+FROM forensics
+| WHERE layer == "derived" AND derived_type == "contract_interaction"
+| STATS tx_count = COUNT(*), block_min = MIN(block_number), block_max = MAX(block_number) BY from_address
+| EVAL block_span = block_max - block_min
+| WHERE tx_count >= 5 AND block_span <= 3
+| SORT tx_count DESC
+| LIMIT 50

@@ -1,0 +1,9 @@
+/* pattern: AP-001
+   name: Flash Loan Oracle Manipulation
+   confidence: 0.90
+   description: Flash loan used to manipulate DEX pool, read stale oracle, drain victim protocol
+   required_signals: flash_loan_detected, large_price_impact_swap, large_token_transfer
+*/
+sequence by tx_hash with maxspan=1m
+  [layer == "signal" and signal_name == "flash_loan_detected"]
+  [layer == "signal" and signal_name == "large_token_transfer"]

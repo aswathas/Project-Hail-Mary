@@ -1,0 +1,24 @@
+{
+  "investigation_name": "Admin Key Abuse",
+  "chain_id": 31337,
+  "rpc_url": "http://127.0.0.1:8545",
+  "contracts": [
+    {
+      "address": "FILL_AFTER_DEPLOY",
+      "name": "GovernanceToken",
+      "role": "victim",
+      "abi_file": "abis/GovernanceToken.json"
+    },
+    {
+      "address": "FILL_AFTER_DEPLOY",
+      "name": "SimpleDEX",
+      "role": "dependency",
+      "abi_file": "abis/SimpleDEX.json"
+    }
+  ],
+  "block_range": {
+    "from": "FILL_AFTER_DEPLOY",
+    "to": "FILL_AFTER_DEPLOY"
+  },
+  "notes": "Ownership of our governance token was transferred without authorization. Attacker minted tokens and dumped on our DEX."
+}

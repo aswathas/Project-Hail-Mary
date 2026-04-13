@@ -1,0 +1,11 @@
+-- signal: large_outflow
+-- severity: HIGH
+-- score: 0.8
+-- description: Detects native ETH outflows exceeding 10 ETH in a single transaction
+FROM forensics
+| WHERE layer == "derived" AND derived_type == "native_transfer"
+| WHERE value_eth > 10.0
+| STATS total_outflow = SUM(value_eth), tx_count = COUNT(*) BY from_address, tx_hash, block_number
+| WHERE total_outflow > 10.0
+| SORT total_outflow DESC
+| LIMIT 100

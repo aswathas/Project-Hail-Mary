@@ -1,0 +1,65 @@
+.stored {
+  padding: 20px;
+}
+
+.stored__empty {
+  text-align: center;
+  color: var(--gray);
+  padding: 40px 20px;
+  font-size: 0.875rem;
+}
+
+.stored__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8125rem;
+}
+
+.stored__table th {
+  text-align: left;
+  font-size: 0.6875rem;
+  font-weight: var(--fw-black);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--gray);
+  padding: 8px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.stored__table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.stored__row {
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.stored__row:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.stored__funds {
+  color: var(--danger-red);
+}
+
+.stored__date {
+  color: var(--gray);
+  font-size: 0.75rem;
+}
+
+.stored__delete {
+  background: none;
+  border: none;
+  color: var(--gray);
+  cursor: pointer;
+  font-size: 0.875rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.stored__delete:hover {
+  color: var(--danger-red);
+  background: rgba(208, 50, 56, 0.1);
+}

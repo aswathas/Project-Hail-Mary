@@ -1,0 +1,12 @@
+-- signal: new_wallet_high_value
+-- severity: HIGH
+-- score: 0.7
+-- description: Detects wallets with very few transactions but high cumulative value (potential attacker funded wallet)
+FROM forensics
+| WHERE layer == "derived" AND (derived_type == "native_transfer" OR derived_type == "asset_transfer")
+| STATS total_eth = SUM(value_eth), total_tokens = SUM(amount_decimal), tx_count = COUNT(*), first_block = MIN(block_number), last_block = MAX(block_number) BY from_address
+| WHERE tx_count <= 5 AND (total_eth > 10.0 OR total_tokens > 1000000)
+| EVAL block_span = last_block - first_block
+| WHERE block_span < 10
+| SORT total_eth DESC
+| LIMIT 50

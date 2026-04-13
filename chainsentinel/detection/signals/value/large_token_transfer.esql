@@ -1,0 +1,10 @@
+-- signal: large_token_transfer
+-- severity: HIGH
+-- score: 0.75
+-- description: Detects ERC20 token transfers with amount exceeding 1M tokens (pre-decimal)
+FROM forensics
+| WHERE layer == "derived" AND derived_type == "asset_transfer"
+| WHERE amount_decimal > 1000000.0
+| STATS total_amount = SUM(amount_decimal), tx_count = COUNT(*) BY from_address, to_address, token_address, tx_hash, block_number
+| SORT total_amount DESC
+| LIMIT 100

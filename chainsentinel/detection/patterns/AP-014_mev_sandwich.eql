@@ -1,0 +1,10 @@
+/* pattern: AP-014
+   name: MEV Sandwich Attack
+   confidence: 0.80
+   description: Attacker front-runs victim swap, victim executes at worse price, attacker back-runs for profit
+   required_signals: large_token_transfer, value_spike
+*/
+sequence by investigation_id with maxspan=1m
+  [layer == "signal" and signal_name == "large_token_transfer"]
+  [layer == "signal" and signal_name == "large_token_transfer"]
+  [layer == "signal" and signal_name == "large_token_transfer"]

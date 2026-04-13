@@ -1,0 +1,42 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+*.egg
+dist/
+build/
+
+# Node
+node_modules/
+chainsentinel/frontend/dist/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Env
+.env
+.env.local
+
+# Pytest
+.pytest_cache/
+
+# Foundry
+simulations/cache/
+simulations/out/
+simulations/broadcast/
+
+# Claude
+.claude/
+
+# Local config
+.mcp.json
+.env

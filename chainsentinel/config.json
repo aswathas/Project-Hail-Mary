@@ -1,0 +1,13 @@
+{
+  "rpc_url": "http://127.0.0.1:8545",
+  "es_url": "http://localhost:9200",
+  "ollama_url": "http://localhost:11434",
+  "ollama_model": "gemma3:1b",
+  "ollama_temperature": 0.2,
+  "chain_id": 31337,
+  "mode": "simulation",
+  "max_trace_hops": 5,
+  "tx_history_limit": 200,
+  "signal_score_threshold": 0.5,
+  "es_bulk_chunk_size": 500
+}

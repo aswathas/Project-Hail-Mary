@@ -1,0 +1,9 @@
+/* pattern: AP-005
+   name: Reentrancy Drain
+   confidence: 0.90
+   description: Recursive call pattern with abnormal call depth followed by large ETH outflow
+   required_signals: reentrancy_pattern, call_depth_anomaly, large_outflow, internal_eth_drain
+*/
+sequence by tx_hash with maxspan=1m
+  [layer == "signal" and signal_name == "reentrancy_pattern"]
+  [layer == "signal" and (signal_name == "large_outflow" or signal_name == "internal_eth_drain")]
