@@ -4,6 +4,6 @@
    description: Ownership transfer to unknown address followed by large value extraction
    required_signals: ownership_transferred, large_outflow, large_token_transfer
 */
-sequence by investigation_id with maxspan=5m
-  [layer == "signal" and signal_name == "ownership_transferred"]
-  [layer == "signal" and (signal_name == "large_outflow" or signal_name == "large_token_transfer")]
+sequence with maxspan=5m
+  [derived where action_type == "ownership_transfer"]
+  [signal where signal_name == "large_outflow" or signal_name == "large_token_transfer"]

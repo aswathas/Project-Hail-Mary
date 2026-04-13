@@ -292,6 +292,13 @@ async def analyze(request: AnalyzeRequest):
             chain_id = config.get("chain_id", 31337)
             def _noop_ingest(client, docs, index): pass
 
+            # Refresh indices so signal queries see freshly ingested data
+            try:
+                sync_es.indices.refresh(index="forensics")
+                sync_es.indices.refresh(index="forensics-raw")
+            except Exception:
+                pass
+
             # Signal engine (ES|QL queries)
             try:
                 signal_docs = run_all_signals(
@@ -320,6 +327,12 @@ async def analyze(request: AnalyzeRequest):
                     "ts": _ts(),
                 }),
             }
+
+            # Refresh so patterns can see the signals
+            try:
+                sync_es.indices.refresh(index="forensics")
+            except Exception:
+                pass
 
             # Pattern engine (EQL sequences)
             try:

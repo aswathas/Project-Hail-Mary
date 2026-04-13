@@ -4,6 +4,6 @@
    description: Recursive call pattern with abnormal call depth followed by large ETH outflow
    required_signals: reentrancy_pattern, call_depth_anomaly, large_outflow, internal_eth_drain
 */
-sequence by tx_hash with maxspan=1m
-  [layer == "signal" and signal_name == "reentrancy_pattern"]
-  [layer == "signal" and (signal_name == "large_outflow" or signal_name == "internal_eth_drain")]
+sequence with maxspan=5m
+  [signal where signal_name == "new_contract_deployed"]
+  [signal where signal_name == "large_outflow" or signal_name == "new_wallet_high_value"]
