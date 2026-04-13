@@ -54,3 +54,86 @@ async def test_pipeline_ingests_all_scenarios():
         assert data["stats"]["raw_docs"] > 0, (
             f"{scenario_name}: expected raw_docs > 0, got {data['stats']['raw_docs']}"
         )
+
+
+@pytest.mark.asyncio
+async def test_e2e_full_pipeline():
+    """
+    Master E2E test:
+    1. Run all 4 Foundry simulations (200+ txs)
+    2. Execute ChainSentinel pipeline (collector → derived → ingest)
+    3. Validate ES: counts for txs, decoded, derived, signals, alerts
+    4. Repair: diagnose & fix failures if any
+    """
+    import asyncio
+    import json
+    from datetime import datetime
+    from pathlib import Path
+    from e2e_helpers.pipeline_runner import run_all_pipelines
+    from e2e_helpers.validator import Validator
+    from e2e_helpers.repair import Repair
+
+    print("\n" + "=" * 70)
+    print("E2E FULL PIPELINE TEST")
+    print("=" * 70)
+
+    # Step 1: Simulate
+    print("\n[STEP 1] Running 4 Foundry scenarios...")
+    try:
+        sim_results = run_all_scenarios()
+        print(f"✓ Simulations complete: {list(sim_results.keys())}")
+    except Exception as e:
+        pytest.fail(f"Simulator failed: {e}")
+
+    # Step 2: Pipeline
+    print("\n[STEP 2] Executing ChainSentinel pipeline...")
+    try:
+        pipeline_results = await run_all_pipelines(sim_results)
+        for scenario, data in pipeline_results.items():
+            print(f"  ✓ {scenario}: {data['stats']}")
+    except Exception as e:
+        pytest.fail(f"Pipeline failed: {e}")
+
+    # Step 3: Validate
+    print("\n[STEP 3] Validating ES ingestion...")
+    validator = Validator()
+    investigation_ids = [data["investigation_id"] for data in pipeline_results.values()]
+
+    validation_results = validator.validate_all(investigation_ids)
+    validator.print_summary(validation_results)
+
+    # Step 4: Repair (if needed)
+    if not validation_results["passed"]:
+        print("\n[STEP 4] Running repair agent...")
+        repair = Repair()
+        failed_checks = {
+            k: v for k, v in validation_results["checks"].items()
+            if not v.get("passed")
+        }
+        diagnosis = repair.diagnose(failed_checks)
+        print(f"  Issue: {diagnosis.get('issue')}")
+        print(f"  Fix: {diagnosis.get('fix')}")
+        pytest.fail(f"Validation failed (see repair suggestions above)")
+
+    # Save results
+    output_file = (
+        Path("chainsentinel/e2e_results") /
+        f"test-results-E2E-{datetime.now().strftime('%Y%m%d-%H%M%S')}.json"
+    )
+    output_file.parent.mkdir(exist_ok=True)
+    with open(output_file, "w") as f:
+        json.dump(
+            {
+                "timestamp": datetime.now().isoformat(),
+                "simulations": sim_results,
+                "pipeline": pipeline_results,
+                "validation": validation_results,
+            },
+            f,
+            indent=2,
+            default=str,
+        )
+
+    print(f"\n✓ E2E TEST PASSED")
+    print(f"  Results: {output_file}")
+    print("=" * 70)
