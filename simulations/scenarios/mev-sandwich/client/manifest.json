@@ -11,8 +11,8 @@
     }
   ],
   "block_range": {
-    "from": "FILL_AFTER_DEPLOY",
-    "to": "FILL_AFTER_DEPLOY"
+    "from": 201,
+    "to": 250
   },
   "notes": "Users are reporting getting much worse swap rates than expected. We suspect front-running."
 }

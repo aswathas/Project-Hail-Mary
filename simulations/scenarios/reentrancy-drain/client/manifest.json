@@ -11,8 +11,8 @@
     }
   ],
   "block_range": {
-    "from": "FILL_AFTER_DEPLOY",
-    "to": "FILL_AFTER_DEPLOY"
+    "from": 1,
+    "to": 100
   },
   "notes": "Our ETH vault was drained. We noticed all user deposits disappeared in a single transaction. Multiple users had deposited over the past few blocks. Please investigate the drain and trace where the funds went."
 }

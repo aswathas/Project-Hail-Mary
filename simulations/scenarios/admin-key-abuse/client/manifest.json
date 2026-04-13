@@ -17,8 +17,8 @@
     }
   ],
   "block_range": {
-    "from": "FILL_AFTER_DEPLOY",
-    "to": "FILL_AFTER_DEPLOY"
+    "from": 151,
+    "to": 200
   },
   "notes": "Ownership of our governance token was transferred without authorization. The attacker minted massive amounts of tokens and dumped them on our DEX, draining all ETH liquidity. Token holders report the token is now worthless."
 }
