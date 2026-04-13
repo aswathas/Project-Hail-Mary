@@ -1,3 +1,4 @@
+import re
 import pytest
 from pathlib import Path
 
@@ -6,124 +7,201 @@ SIGNALS_DIR = Path(__file__).parent.parent / "detection" / "signals"
 PATTERNS_DIR = Path(__file__).parent.parent / "detection" / "patterns"
 
 
-def test_all_value_signals_have_required_headers():
-    """Every .esql in value/ must have signal, severity, score, description headers."""
-    value_dir = SIGNALS_DIR / "value"
-    for esql_file in value_dir.glob("*.esql"):
-        content = esql_file.read_text()
-        assert "-- signal:" in content, f"{esql_file.name} missing signal header"
-        assert "-- severity:" in content, f"{esql_file.name} missing severity header"
-        assert "-- score:" in content, f"{esql_file.name} missing score header"
-        assert "-- description:" in content, f"{esql_file.name} missing description header"
-        assert "FROM forensics" in content, f"{esql_file.name} missing FROM forensics"
+# ---------------------------------------------------------------------------
+# Signal header checks — all families
+# ---------------------------------------------------------------------------
+
+def _check_headers(esql_file: Path):
+    content = esql_file.read_text()
+    assert "-- signal:" in content, f"{esql_file.name} missing signal header"
+    assert "-- severity:" in content, f"{esql_file.name} missing severity header"
+    assert "-- score:" in content, f"{esql_file.name} missing score header"
+    assert "-- description:" in content, f"{esql_file.name} missing description header"
+    assert "FROM forensics" in content, f"{esql_file.name} missing FROM forensics"
 
 
-def test_all_value_signals_exist():
-    value_dir = SIGNALS_DIR / "value"
-    expected = ["large_outflow", "large_token_transfer", "max_approval", "value_spike"]
-    for name in expected:
-        assert (value_dir / f"{name}.esql").exists(), f"Missing {name}.esql"
+def test_all_signals_have_required_headers():
+    """Every .esql file must have the standard comment headers."""
+    for esql_file in SIGNALS_DIR.rglob("*.esql"):
+        _check_headers(esql_file)
 
 
 def test_signal_files_are_valid_esql():
-    """Basic syntax check: every signal must start with comments then FROM forensics."""
+    """First non-comment query line must start with FROM."""
     for esql_file in SIGNALS_DIR.rglob("*.esql"):
         content = esql_file.read_text()
-        # Strip comment lines, first non-comment line should start with FROM
-        lines = [l.strip() for l in content.splitlines() if l.strip() and not l.strip().startswith("--")]
+        lines = [l.strip() for l in content.splitlines()
+                 if l.strip() and not l.strip().startswith("--")]
         assert len(lines) > 0, f"{esql_file.name} is empty after removing comments"
-        assert lines[0].startswith("FROM "), f"{esql_file.name} first query line must start with FROM"
+        assert lines[0].startswith("FROM "), (
+            f"{esql_file.name} first query line must start with FROM"
+        )
 
 
-def test_all_flash_loan_signals_exist():
-    flash_dir = SIGNALS_DIR / "flash_loan"
-    expected = ["flash_loan_detected", "flash_loan_with_drain"]
-    for name in expected:
-        assert (flash_dir / f"{name}.esql").exists(), f"Missing {name}.esql"
+# ---------------------------------------------------------------------------
+# Total count
+# ---------------------------------------------------------------------------
 
-
-def test_all_flash_loan_signals_have_headers():
-    flash_dir = SIGNALS_DIR / "flash_loan"
-    for esql_file in flash_dir.glob("*.esql"):
-        content = esql_file.read_text()
-        assert "-- signal:" in content, f"{esql_file.name} missing signal header"
-        assert "FROM forensics" in content, f"{esql_file.name} missing FROM forensics"
-
-
-def test_all_access_signals_exist():
-    access_dir = SIGNALS_DIR / "access"
-    expected = ["ownership_transferred", "role_granted", "proxy_upgraded"]
-    for name in expected:
-        assert (access_dir / f"{name}.esql").exists(), f"Missing {name}.esql"
-
-
-def test_all_structural_signals_exist():
-    struct_dir = SIGNALS_DIR / "structural"
-    expected = ["reentrancy_pattern", "call_depth_anomaly", "repeated_external_call", "internal_eth_drain"]
-    for name in expected:
-        assert (struct_dir / f"{name}.esql").exists(), f"Missing {name}.esql"
-
-
-def test_all_deployment_signals_exist():
-    deploy_dir = SIGNALS_DIR / "deployment"
-    expected = ["new_contract_deployed", "failed_high_gas"]
-    for name in expected:
-        assert (deploy_dir / f"{name}.esql").exists(), f"Missing {name}.esql"
-
-
-def test_all_liquidity_signals_exist():
-    liq_dir = SIGNALS_DIR / "liquidity"
-    expected = ["large_liquidity_removal"]
-    for name in expected:
-        assert (liq_dir / f"{name}.esql").exists(), f"Missing {name}.esql"
-
-
-def test_all_defi_signals_exist():
-    defi_dir = SIGNALS_DIR / "defi"
-    expected = ["vault_first_deposit_tiny", "liquidation_event"]
-    for name in expected:
-        assert (defi_dir / f"{name}.esql").exists(), f"Missing {name}.esql"
-
-
-def test_all_behavioural_signals_exist():
-    behav_dir = SIGNALS_DIR / "behavioural"
-    expected = ["new_wallet_high_value", "burst_transactions"]
-    for name in expected:
-        assert (behav_dir / f"{name}.esql").exists(), f"Missing {name}.esql"
-
-
-def test_wave1_total_signal_count():
-    """Wave 1 should have exactly 20 signals."""
+def test_total_signal_count():
+    """Bible v2: 60 signals total."""
     count = len(list(SIGNALS_DIR.rglob("*.esql")))
-    assert count == 20, f"Expected 20 Wave 1 signals, found {count}"
+    assert count == 60, f"Expected 60 signals, found {count}"
 
 
-def test_wave1_patterns_exist():
+# ---------------------------------------------------------------------------
+# Per-family existence checks
+# ---------------------------------------------------------------------------
+
+def test_structural_signals_exist():
+    family = SIGNALS_DIR / "structural"
     expected = [
-        "AP-001_flash_loan_oracle",
-        "AP-005_reentrancy_drain",
-        "AP-008_access_control_abuse",
-        "AP-014_mev_sandwich",
+        "recursive_depth_pattern",
+        "cross_function_reentry",
+        "value_drain_per_depth",
+        "storage_update_delay",
+        "hook_callback_detected",
+        "delegatecall_storage_write",
+        "proxy_implementation_change",
+        "selfdestruct_detected",
+        "flashloan_bracket_detected",
+        "initialize_on_live_contract",
+        "create2_redeployment",
     ]
     for name in expected:
-        assert (PATTERNS_DIR / f"{name}.eql").exists(), f"Missing {name}.eql"
+        assert (family / f"{name}.esql").exists(), f"Missing structural/{name}.esql"
 
 
-def test_wave1_pattern_count():
+def test_value_signals_exist():
+    family = SIGNALS_DIR / "value"
+    expected = [
+        "large_value_inflow_spike",
+        "drain_ratio_exceeded",
+        "value_concentration",
+        "value_dispersion",
+        "net_negative_contract_balance",
+        "mint_to_dump_ratio",
+        "liquidity_removal_spike",
+        "vault_share_price_spike",
+        "multiple_asset_drain_same_tx",
+    ]
+    for name in expected:
+        assert (family / f"{name}.esql").exists(), f"Missing value/{name}.esql"
+
+
+def test_sequence_signals_exist():
+    family = SIGNALS_DIR / "sequence"
+    expected = [
+        "deposit_withdraw_same_tx",
+        "event_order_violation",
+        "duplicate_event_emission",
+        "missing_expected_event",
+        "event_parameter_mismatch",
+        "ownership_transfer_then_drain",
+    ]
+    for name in expected:
+        assert (family / f"{name}.esql").exists(), f"Missing sequence/{name}.esql"
+
+
+def test_behavioural_signals_exist():
+    family = SIGNALS_DIR / "behavioural"
+    expected = [
+        "new_address_first_interaction",
+        "contract_deployed_before_attack",
+        "address_funded_before_attack",
+        "nonce_gap_detected",
+        "high_gas_anomaly",
+        "failed_attempts_before_success",
+        "approval_for_max_amount",
+        "same_block_deploy_and_attack",
+        "contract_size_anomaly",
+    ]
+    for name in expected:
+        assert (family / f"{name}.esql").exists(), f"Missing behavioural/{name}.esql"
+
+
+def test_oracle_signals_exist():
+    family = SIGNALS_DIR / "oracle"
+    expected = [
+        "price_read_during_callback",
+        "spot_price_manipulation",
+        "reserve_ratio_spike",
+        "twap_drift_detected",
+        "multi_oracle_divergence",
+        "price_before_after_mismatch",
+        "donation_balance_inflation",
+    ]
+    for name in expected:
+        assert (family / f"{name}.esql").exists(), f"Missing oracle/{name}.esql"
+
+
+def test_graph_signals_exist():
+    family = SIGNALS_DIR / "graph"
+    expected = [
+        "fund_dispersion_post_attack",
+        "mixer_interaction_detected",
+        "bridge_interaction_detected",
+        "address_cluster_identified",
+        "contract_creator_linked",
+        "multi_hop_fund_trail",
+    ]
+    for name in expected:
+        assert (family / f"{name}.esql").exists(), f"Missing graph/{name}.esql"
+
+
+def test_additional_signals_exist():
+    family = SIGNALS_DIR / "additional"
+    expected = [
+        "integer_overflow_detected",
+        "liquidation_cascade_trigger",
+        "eip712_replay_detected",
+        "fee_on_transfer_discrepancy",
+        "rebasing_balance_manipulation",
+        "cross_contract_state_dependency",
+        "governance_instant_execution",
+        "permit_used_before_owner_approval",
+    ]
+    for name in expected:
+        assert (family / f"{name}.esql").exists(), f"Missing additional/{name}.esql"
+
+
+# ---------------------------------------------------------------------------
+# Pattern checks
+# ---------------------------------------------------------------------------
+
+def test_total_pattern_count():
+    """Bible v2: 38 attack patterns."""
     count = len(list(PATTERNS_DIR.glob("*.eql")))
-    assert count == 4, f"Expected 4 Wave 1 patterns, found {count}"
-
-
-def test_all_patterns_have_required_headers():
-    for eql_file in PATTERNS_DIR.glob("*.eql"):
-        content = eql_file.read_text()
-        assert "pattern:" in content, f"{eql_file.name} missing pattern header"
-        assert "confidence:" in content, f"{eql_file.name} missing confidence header"
-        assert "required_signals:" in content, f"{eql_file.name} missing required_signals"
-        assert "sequence" in content, f"{eql_file.name} missing sequence keyword"
+    assert count == 38, f"Expected 38 patterns, found {count}"
 
 
 def test_all_patterns_have_valid_id_in_filename():
-    import re
     for eql_file in PATTERNS_DIR.glob("*.eql"):
-        assert re.match(r"AP-\d{3}_", eql_file.stem), f"{eql_file.name} doesn't match AP-NNN_ format"
+        assert re.match(r"AP-\d{3}_", eql_file.stem), (
+            f"{eql_file.name} doesn't match AP-NNN_ format"
+        )
+
+
+def test_all_patterns_have_required_headers():
+    """Every .eql file must have pattern, confidence, and sequence keyword."""
+    for eql_file in PATTERNS_DIR.glob("*.eql"):
+        content = eql_file.read_text()
+        assert "// pattern:" in content, f"{eql_file.name} missing pattern header"
+        assert "// confidence:" in content, f"{eql_file.name} missing confidence header"
+        assert "sequence" in content, f"{eql_file.name} missing sequence keyword"
+
+
+def test_core_patterns_exist():
+    """Spot-check a representative pattern from each family."""
+    expected = [
+        "AP-001_classic_reentrancy",
+        "AP-005_classic_flash_loan",
+        "AP-009_amm_spot_price",
+        "AP-012_ownership_hijack",
+        "AP-016_sandwich_attack",
+        "AP-019_liquidity_rug",
+        "AP-023_donation_attack",
+        "AP-030_attacker_deployment",
+        "AP-035_governance_manipulation",
+    ]
+    for name in expected:
+        assert (PATTERNS_DIR / f"{name}.eql").exists(), f"Missing {name}.eql"

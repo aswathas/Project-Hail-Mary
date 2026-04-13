@@ -5,7 +5,7 @@
     "index.mapping.total_fields.limit": 500
   },
   "mappings": {
-    "dynamic": "false",
+    "dynamic": "strict",
     "properties": {
       "investigation_id": { "type": "keyword" },
       "chain_id": { "type": "integer" },

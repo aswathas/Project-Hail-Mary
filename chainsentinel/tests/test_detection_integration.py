@@ -27,9 +27,9 @@ def test_detection_phase_runs_after_ingest():
     )
 
     # Signal engine should have called esql.query for each .esql file
-    assert mock_client.esql.query.call_count == 20
+    assert mock_client.esql.query.call_count == 60
     # Pattern engine should have called eql.search for each .eql file
-    assert mock_client.eql.search.call_count == 4
+    assert mock_client.eql.search.call_count == 38
 
 
 def test_signal_documents_have_correct_id_format():

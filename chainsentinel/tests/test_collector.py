@@ -62,13 +62,25 @@ async def test_collect_transaction_includes_trace_when_available():
     mock_w3.eth.get_block = AsyncMock(return_value={
         "number": 10, "timestamp": 1736942400,
     })
-    mock_w3.manager = MagicMock()
-    mock_w3.manager.request_blocking = MagicMock(return_value={
-        "type": "CALL", "from": "0xdead", "to": "0x1234",
-        "value": "0x0", "calls": [],
-    })
+    trace_response = {
+        "jsonrpc": "2.0", "id": 1,
+        "result": {
+            "type": "CALL", "from": "0xdead", "to": "0x1234",
+            "value": "0x0", "calls": [],
+        },
+    }
+    mock_response = MagicMock()
+    mock_response.json.return_value = trace_response
 
-    result = await collect_transaction(mock_w3, "0xabc", include_trace=True)
+    with patch("pipeline.collector.httpx.AsyncClient") as mock_client_cls:
+        mock_async_client = AsyncMock()
+        mock_async_client.post = AsyncMock(return_value=mock_response)
+        mock_client_cls.return_value.__aenter__ = AsyncMock(return_value=mock_async_client)
+        mock_client_cls.return_value.__aexit__ = AsyncMock(return_value=False)
+
+        result = await collect_transaction(
+            mock_w3, "0xabc", include_trace=True, rpc_url="http://127.0.0.1:8545"
+        )
 
     assert result["trace"] is not None
     assert result["trace"]["type"] == "CALL"
