@@ -133,10 +133,13 @@ async def index_raw(
     raw_docs: list[dict],
     investigation_id: str,
 ) -> dict:
-    """Index raw collector output into the ``forensics-raw`` index.
+    """Index raw collector output or normalized documents into the ``forensics-raw`` index.
 
     Adds ``investigation_id``, ``@timestamp``, and infers ``doc_type``
     (transaction / log / trace) before indexing.
+
+    Handles normalized documents by extracting the logs array and indexing
+    each log as a separate document.
     """
     now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
@@ -145,6 +148,10 @@ async def index_raw(
         enriched_doc = dict(doc)
         enriched_doc["investigation_id"] = investigation_id
         enriched_doc.setdefault("@timestamp", now)
+
+        # Extract logs array if present (from normalized documents)
+        # Logs must be indexed as separate documents with doc_type: "log"
+        logs_to_index = enriched_doc.pop("logs", []) if "logs" in enriched_doc else []
 
         # Infer doc_type if not already set
         if "doc_type" not in enriched_doc:
@@ -156,6 +163,14 @@ async def index_raw(
                 enriched_doc["doc_type"] = "transaction"
 
         enriched.append(enriched_doc)
+
+        # Index extracted logs as separate documents
+        for log in logs_to_index:
+            log_doc = dict(log)
+            log_doc["investigation_id"] = investigation_id
+            log_doc.setdefault("@timestamp", now)
+            log_doc["doc_type"] = "log"
+            enriched.append(log_doc)
 
     return await bulk_index(es_client, enriched, "forensics-raw")
 

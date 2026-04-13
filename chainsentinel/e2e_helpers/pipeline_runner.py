@@ -106,18 +106,30 @@ async def run_pipeline_for_scenario(
                     scenario_name, phase, event.get("msg", ""),
                 )
 
-        # 4. Ingest raw collector documents into forensics-raw
+        # 4. Ingest normalized documents into forensics-raw
+        # Note: We use normalized_docs (from normalizer phase) not raw_docs (from collector)
+        # because forensics-raw index mapping expects normalized field names
+        # (from_address not from, to_address not to, block_timestamp_raw not block_timestamp)
+        normalized_raw_docs = event.get("normalized_docs", [])
         raw_result: dict = {"indexed": 0, "errors": 0}
-        if raw_docs:
-            raw_result = await index_raw(es_client, raw_docs, investigation_id)
-            logger.info("[%s] forensics-raw ingest: %s", scenario_name, raw_result)
+        if normalized_raw_docs:
+            raw_result = await index_raw(es_client, normalized_raw_docs, investigation_id)
+            logger.info("[%s] forensics-raw ingest: indexed=%d, errors=%d",
+                       scenario_name, raw_result.get("indexed", 0), raw_result.get("errors", 0))
+            if raw_result.get("error_details"):
+                logger.warning("[%s] forensics-raw errors: %s",
+                             scenario_name, raw_result.get("error_details", [])[:3])
 
         # 5. Ingest decoded + derived documents into forensics
         all_forensics_docs = decoded_docs + derived_docs
         forensics_result: dict = {"indexed": 0, "errors": 0}
         if all_forensics_docs:
             forensics_result = await index_derived(es_client, all_forensics_docs)
-            logger.info("[%s] forensics ingest: %s", scenario_name, forensics_result)
+            logger.info("[%s] forensics ingest: indexed=%d, errors=%d",
+                       scenario_name, forensics_result.get("indexed", 0), forensics_result.get("errors", 0))
+            if forensics_result.get("error_details"):
+                logger.warning("[%s] forensics errors: %s",
+                             scenario_name, forensics_result.get("error_details", [])[:3])
 
         stats = {
             "raw_docs": len(raw_docs),
