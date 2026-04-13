@@ -6,13 +6,15 @@ import json
 import logging
 from pathlib import Path
 
-from elasticsearch import AsyncElasticsearch
+from elasticsearch import AsyncElasticsearch, Elasticsearch
 from web3 import AsyncWeb3
 from web3.providers import AsyncHTTPProvider
 
 from pipeline.runner import run_range_analysis
-from pipeline.ingest import index_raw, index_derived
+from pipeline.ingest import index_raw, index_derived, bulk_index
 from es.setup import setup_elasticsearch
+from detection.signal_engine import run_all_signals
+from detection.pattern_engine import run_all_patterns
 
 logger = logging.getLogger("chainsentinel.e2e.pipeline_runner")
 
@@ -140,10 +142,54 @@ async def run_pipeline_for_scenario(
                 logger.warning("[%s] forensics errors: %s",
                              scenario_name, forensics_result.get("error_details", [])[:3])
 
+        # 6. Run signal engine (ES|QL queries) - use sync ES client
+        signal_docs = []
+        try:
+            sync_es = Elasticsearch(hosts=[es_url])
+            signal_docs = run_all_signals(
+                sync_es,
+                lambda client, docs, idx: None,  # Already indexed, just collect
+                investigation_id=investigation_id,
+                chain_id=CHAIN_ID,
+            )
+            logger.info("[%s] Signal engine: %d signals detected", scenario_name, len(signal_docs))
+            # Ingest signal documents
+            if signal_docs:
+                signal_result = await bulk_index(es_client, signal_docs, "forensics")
+                logger.info("[%s] Signals indexed: %d", scenario_name, signal_result.get("indexed", 0))
+            sync_es.close()
+        except Exception as e:
+            logger.warning("[%s] Signal engine failed: %s", scenario_name, str(e))
+            import traceback
+            logger.debug(traceback.format_exc())
+
+        # 7. Run pattern engine (EQL attack patterns) - use sync ES client
+        alert_docs = []
+        try:
+            sync_es = Elasticsearch(hosts=[es_url])
+            alert_docs = run_all_patterns(
+                sync_es,
+                lambda client, docs, idx: None,  # Already indexed, just collect
+                investigation_id=investigation_id,
+                chain_id=CHAIN_ID,
+            )
+            logger.info("[%s] Pattern engine: %d alerts detected", scenario_name, len(alert_docs))
+            # Ingest alert documents
+            if alert_docs:
+                alert_result = await bulk_index(es_client, alert_docs, "forensics")
+                logger.info("[%s] Alerts indexed: %d", scenario_name, alert_result.get("indexed", 0))
+            sync_es.close()
+        except Exception as e:
+            logger.warning("[%s] Pattern engine failed: %s", scenario_name, str(e))
+            import traceback
+            logger.debug(traceback.format_exc())
+
         stats = {
             "raw_docs": len(raw_docs),
             "decoded_docs": len(decoded_docs),
             "derived_docs": len(derived_docs),
+            "signal_docs": len(signal_docs),
+            "alert_docs": len(alert_docs),
             "raw_indexed": raw_result.get("indexed", 0),
             "raw_errors": raw_result.get("errors", 0),
             "forensics_indexed": forensics_result.get("indexed", 0),

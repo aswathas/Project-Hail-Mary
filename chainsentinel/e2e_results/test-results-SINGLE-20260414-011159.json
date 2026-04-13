@@ -1,0 +1,58 @@
+{
+  "timestamp": "2026-04-14T01:11:59.494620",
+  "scenario": "reentrancy-drain",
+  "simulation": {
+    "block_from": 1,
+    "block_to": 100,
+    "tx_count": 0
+  },
+  "pipeline": {
+    "scenario": "reentrancy-drain",
+    "investigation_id": "INV-REEN-0001",
+    "blocks": "1-100",
+    "stats": {
+      "raw_docs": 100,
+      "decoded_docs": 105,
+      "derived_docs": 1835,
+      "raw_indexed": 205,
+      "raw_errors": 0,
+      "forensics_indexed": 1940,
+      "forensics_errors": 0,
+      "runner_txs": 100,
+      "runner_blocks": 100
+    }
+  },
+  "validation": {
+    "investigations": [
+      "INV-REEN-0001"
+    ],
+    "checks": {
+      "tx_count": {
+        "expected_min": 50,
+        "actual": 100,
+        "passed": true
+      },
+      "decoded_logs": {
+        "expected_min": 10,
+        "actual": 11,
+        "passed": true
+      },
+      "derived_types": {
+        "expected_min": 10,
+        "actual": 20,
+        "passed": true
+      },
+      "signals": {
+        "expected_min": 1,
+        "actual": 0,
+        "passed": false
+      },
+      "alerts": {
+        "expected_min": 1,
+        "actual": 0,
+        "passed": false
+      }
+    },
+    "passed": true
+  }
+}
