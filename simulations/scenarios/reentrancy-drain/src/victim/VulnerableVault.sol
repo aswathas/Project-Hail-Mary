@@ -24,12 +24,16 @@ contract VulnerableVault {
     function withdraw(uint256 amount) external {
         require(balances[msg.sender] >= amount, "Insufficient balance");
 
-        // BUG: sends ETH before updating state
+        // BUG: sends ETH before updating state — classic reentrancy
         (bool success,) = msg.sender.call{value: amount}("");
         require(success, "Transfer failed");
 
-        balances[msg.sender] -= amount;
-        totalDeposits -= amount;
+        // State update after external call (the vulnerability)
+        // unchecked to simulate pre-0.8 behavior where underflow wraps
+        unchecked {
+            balances[msg.sender] -= amount;
+            totalDeposits -= amount;
+        }
         emit Withdraw(msg.sender, amount);
     }
 

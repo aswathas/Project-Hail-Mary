@@ -284,78 +284,71 @@ async def analyze(request: AnalyzeRequest):
                     ),
                 }
 
-            # Run signal engine (ES|QL queries against indexed data)
+            # Run detection engines against indexed data
             signal_docs = []
+            pattern_docs = []
+            from elasticsearch import Elasticsearch
+            sync_es = Elasticsearch(hosts=[es_url])
+            chain_id = config.get("chain_id", 31337)
+            def _noop_ingest(client, docs, index): pass
+
+            # Signal engine (ES|QL queries)
             try:
-                # Create a sync ES client for the sync signal/pattern engines
-                from elasticsearch import Elasticsearch
-                sync_es = Elasticsearch(hosts=[es_url])
-                chain_id = config.get("chain_id", 31337)
-
-                def sync_ingest(client, docs, index):
-                    pass  # We collect docs and ingest async below
-
                 signal_docs = run_all_signals(
-                    sync_es, sync_ingest,
+                    sync_es, _noop_ingest,
                     investigation_id=investigation_id,
                     chain_id=chain_id,
                 )
                 if signal_docs:
                     await bulk_index(es_client, signal_docs, "forensics")
                     final_stats["signals"] = len(signal_docs)
+            except Exception as sig_exc:
+                logger.warning("Signal engine error (non-fatal): %s", sig_exc)
 
-                yield {
-                    "event": "pipeline",
-                    "data": json.dumps(
-                        {
-                            "phase": "signals",
-                            "msg": f"{len(signal_docs)} signals fired",
-                            "severity": "crit" if any(
-                                s.get("severity") == "CRIT" for s in signal_docs
-                            ) else "ok" if signal_docs else "gray",
-                            "esIndex": "forensics",
-                            "ts": _ts(),
-                        }
+            yield {
+                "event": "pipeline",
+                "data": json.dumps({
+                    "phase": "signals",
+                    "msg": f"{len(signal_docs)} signals fired" + (
+                        " (" + ", ".join(s["signal_name"] for s in signal_docs[:3]) + ")"
+                        if signal_docs else ""
                     ),
-                }
+                    "severity": "crit" if any(
+                        s.get("severity") == "CRIT" for s in signal_docs
+                    ) else "ok" if signal_docs else "gray",
+                    "esIndex": "forensics",
+                    "ts": _ts(),
+                }),
+            }
 
-                # Run pattern engine (EQL sequences against signals + derived)
+            # Pattern engine (EQL sequences)
+            try:
                 pattern_docs = run_all_patterns(
-                    sync_es, sync_ingest,
+                    sync_es, _noop_ingest,
                     investigation_id=investigation_id,
                     chain_id=chain_id,
                 )
                 if pattern_docs:
                     await bulk_index(es_client, pattern_docs, "forensics")
+            except Exception as pat_exc:
+                logger.warning("Pattern engine error (non-fatal): %s", pat_exc)
 
-                yield {
-                    "event": "pipeline",
-                    "data": json.dumps(
-                        {
-                            "phase": "patterns",
-                            "msg": f"{len(pattern_docs)} attack patterns matched"
-                            if pattern_docs else "No patterns matched",
-                            "severity": "crit" if pattern_docs else "gray",
-                            "esIndex": "forensics",
-                            "ts": _ts(),
-                        }
-                    ),
-                }
+            yield {
+                "event": "pipeline",
+                "data": json.dumps({
+                    "phase": "patterns",
+                    "msg": f"{len(pattern_docs)} attack patterns matched"
+                    if pattern_docs else "No patterns matched",
+                    "severity": "crit" if pattern_docs else "gray",
+                    "esIndex": "forensics",
+                    "ts": _ts(),
+                }),
+            }
 
+            try:
                 sync_es.close()
-            except Exception as det_exc:
-                logger.warning("Detection engine error (non-fatal): %s", det_exc)
-                yield {
-                    "event": "pipeline",
-                    "data": json.dumps(
-                        {
-                            "phase": "signals",
-                            "msg": f"Detection skipped: {det_exc}",
-                            "severity": "warn",
-                            "ts": _ts(),
-                        }
-                    ),
-                }
+            except Exception:
+                pass
 
             # Final complete event
             final_stats["indexed"] = (
