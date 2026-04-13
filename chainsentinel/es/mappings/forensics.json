@@ -5,7 +5,7 @@
     "index.mapping.total_fields.limit": 500
   },
   "mappings": {
-    "dynamic": "strict",
+    "dynamic": false,
     "properties": {
 
       "investigation_id": { "type": "keyword" },
@@ -89,6 +89,8 @@
       "is_deployment": { "type": "boolean" },
       "is_first_interaction": { "type": "boolean" },
       "is_contract_call": { "type": "boolean" },
+      "status": { "type": "keyword" },
+      "is_spike": { "type": "boolean" },
 
       "event_name": { "type": "keyword" },
       "event_args": { "type": "flattened" },

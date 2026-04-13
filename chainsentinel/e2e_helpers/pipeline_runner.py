@@ -122,10 +122,15 @@ async def run_pipeline_for_scenario(
 
         # 5. Ingest decoded + derived documents into forensics
         # Add layer field to decoded docs (required by validator and ES mapping)
+        decoded_with_layer = []
         for doc in decoded_docs:
             doc.setdefault("layer", "decoded")
+            decoded_with_layer.append(doc)
 
-        all_forensics_docs = decoded_docs + derived_docs
+        logger.info("[%s] Sending to forensics: decoded=%d, derived=%d",
+                   scenario_name, len(decoded_with_layer), len(derived_docs))
+
+        all_forensics_docs = decoded_with_layer + derived_docs
         forensics_result: dict = {"indexed": 0, "errors": 0}
         if all_forensics_docs:
             forensics_result = await index_derived(es_client, all_forensics_docs)
