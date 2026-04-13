@@ -1,0 +1,10 @@
+// pattern: AP-021
+// name: infinite_approval_drain
+// family: rug_pull
+// confidence: 0.85
+// min_weight: 5
+// description: Max approval granted to attacker contract deployed shortly before drain
+sequence by tx_hash with maxspan=5m
+  [signal where signal_name == "approval_for_max_amount"]
+  [signal where signal_name == "drain_ratio_exceeded"]
+  [signal where signal_name == "contract_deployed_before_attack"]

@@ -1,0 +1,12 @@
+-- signal: rapid_token_dump
+-- family: additional
+-- severity: HIGH
+-- score: 0.80
+-- weight: 2
+-- description: Detects same address making 3 or more token transfers in the same block (rapid dump pattern)
+FROM forensics
+| WHERE layer == "derived" AND derived_type == "token_transfer_graph"
+| STATS transfer_count = COUNT(*), total_amount = SUM(amount_decimal) BY from_address, block_number, tx_hash
+| WHERE transfer_count >= 3
+| SORT transfer_count DESC
+| LIMIT 50

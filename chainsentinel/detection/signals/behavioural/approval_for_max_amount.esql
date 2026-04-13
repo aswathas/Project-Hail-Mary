@@ -1,0 +1,11 @@
+-- signal: approval_for_max_amount
+-- family: behavioural
+-- severity: HIGH
+-- score: 0.75
+-- weight: 2
+-- description: Detects unlimited token approvals (max uint256) which enable unrestricted spending
+FROM forensics
+| WHERE layer == "derived" AND derived_type == "approval_registry" AND is_max_approval == true
+| KEEP tx_hash, block_number, owner_address, spender_address, token_address
+| SORT block_number DESC
+| LIMIT 50

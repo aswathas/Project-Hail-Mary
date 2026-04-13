@@ -1,0 +1,10 @@
+// pattern: AP-025
+// name: permit_signature_abuse
+// family: token_mechanism
+// confidence: 0.90
+// min_weight: 6
+// description: ERC-2612 permit used to gain approval without on-chain tx, max approval set, then tokens drained
+sequence by tx_hash with maxspan=5m
+  [signal where signal_name == "permit_used_before_owner_approval"]
+  [signal where signal_name == "approval_for_max_amount"]
+  [signal where signal_name == "drain_ratio_exceeded"]

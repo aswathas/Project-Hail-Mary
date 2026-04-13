@@ -1,0 +1,10 @@
+// pattern: AP-026
+// name: integer_overflow
+// family: token_mechanism
+// confidence: 0.80
+// min_weight: 3
+// description: Integer overflow in storage followed by event parameter mismatch and delayed state update
+sequence by tx_hash with maxspan=5m
+  [signal where signal_name == "integer_overflow_detected"]
+  [signal where signal_name == "event_parameter_mismatch"]
+  [signal where signal_name == "storage_update_delay"]

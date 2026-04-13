@@ -1,0 +1,10 @@
+// pattern: AP-015
+// name: selfdestruct_drain
+// family: access_control
+// confidence: 0.85
+// min_weight: 6
+// description: Contract self-destructs sending remaining ETH to attacker, leaving net negative balance
+sequence by tx_hash with maxspan=5m
+  [signal where signal_name == "selfdestruct_detected"]
+  [signal where signal_name == "net_negative_contract_balance"]
+  [signal where signal_name == "drain_ratio_exceeded"]

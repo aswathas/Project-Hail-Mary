@@ -1,0 +1,13 @@
+-- signal: fund_dispersion_post_attack
+-- family: graph
+-- severity: HIGH
+-- score: 0.75
+-- weight: 2
+-- description: Detects a single address sending funds to 3 or more distinct recipients — post-attack fund splitting
+FROM forensics
+| WHERE layer == "derived" AND derived_type == "value_flow_graph"
+| STATS recipient_count = COUNT_DISTINCT(to_address), total_sent = SUM(value_eth) BY from_address, block_number
+| WHERE recipient_count >= 3
+| EVAL tx_hash = from_address
+| SORT total_sent DESC
+| LIMIT 50

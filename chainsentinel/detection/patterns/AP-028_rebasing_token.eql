@@ -1,0 +1,9 @@
+// pattern: AP-028
+// name: rebasing_token
+// family: token_mechanism
+// confidence: 0.75
+// min_weight: 2
+// description: Rebasing token balance manipulation detected via storage changes without corresponding Transfer events
+sequence by tx_hash with maxspan=5m
+  [signal where signal_name == "rebasing_balance_manipulation"]
+  [signal where signal_name == "missing_expected_event"]

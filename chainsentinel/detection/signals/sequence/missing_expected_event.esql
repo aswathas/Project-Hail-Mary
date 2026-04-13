@@ -1,0 +1,11 @@
+-- signal: missing_expected_event
+-- family: sequence
+-- severity: CRIT
+-- score: 0.85
+-- weight: 3
+-- description: Detects state changes without corresponding events — storage was modified but no matching event was emitted
+FROM forensics
+| WHERE layer == "derived" AND derived_type == "state_delta_per_tx" AND has_matching_event == false
+| KEEP tx_hash, block_number, contract_address, slot_hex, value_before, value_after
+| SORT block_number DESC
+| LIMIT 50

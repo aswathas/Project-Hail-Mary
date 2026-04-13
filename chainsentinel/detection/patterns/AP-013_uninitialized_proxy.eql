@@ -1,0 +1,10 @@
+// pattern: AP-013
+// name: uninitialized_proxy
+// family: access_control
+// confidence: 0.90
+// min_weight: 6
+// description: Initialize called on live contract to hijack ownership, then proxy implementation changed
+sequence by tx_hash with maxspan=5m
+  [signal where signal_name == "initialize_on_live_contract"]
+  [signal where signal_name == "ownership_transfer_then_drain"]
+  [signal where signal_name == "proxy_implementation_change"]

@@ -1,0 +1,11 @@
+-- signal: high_gas_anomaly
+-- family: behavioural
+-- severity: LOW
+-- score: 0.40
+-- weight: 1
+-- description: Detects transactions with abnormally high gas usage indicating complex execution
+FROM forensics
+| WHERE layer == "derived" AND derived_type == "gas_analysis" AND gas_used > 500000
+| KEEP tx_hash, block_number, from_address, to_address, gas_used, gas_price_gwei
+| SORT gas_used DESC
+| LIMIT 50

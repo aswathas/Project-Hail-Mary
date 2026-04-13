@@ -1,0 +1,11 @@
+-- signal: create2_redeployment
+-- family: structural
+-- severity: CRIT
+-- score: 0.95
+-- weight: 3
+-- description: Detects CREATE2 opcode usage which enables deterministic redeployment to same address
+FROM forensics
+| WHERE layer == "derived" AND derived_type == "execution_structure" AND call_type == "CREATE2"
+| KEEP tx_hash, block_number, caller_address, callee_address, call_depth, value_eth
+| SORT block_number DESC
+| LIMIT 50

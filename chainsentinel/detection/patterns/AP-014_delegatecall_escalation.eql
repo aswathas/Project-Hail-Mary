@@ -1,0 +1,10 @@
+// pattern: AP-014
+// name: delegatecall_escalation
+// family: access_control
+// confidence: 0.90
+// min_weight: 6
+// description: DELEGATECALL used to write storage, change proxy implementation, and hijack ownership
+sequence by tx_hash with maxspan=5m
+  [signal where signal_name == "delegatecall_storage_write"]
+  [signal where signal_name == "proxy_implementation_change"]
+  [signal where signal_name == "ownership_transfer_then_drain"]

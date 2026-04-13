@@ -1,0 +1,12 @@
+-- signal: duplicate_event_emission
+-- family: sequence
+-- severity: CRIT
+-- score: 0.90
+-- weight: 3
+-- description: Detects same event emitted multiple times from same contract in a single transaction — reentrancy indicator
+FROM forensics
+| WHERE layer == "derived" AND derived_type == "event_sequence"
+| STATS emission_count = COUNT(*) BY event_name, contract_address, tx_hash, block_number
+| WHERE emission_count > 1
+| SORT emission_count DESC
+| LIMIT 50

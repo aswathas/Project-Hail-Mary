@@ -1,0 +1,11 @@
+-- signal: price_read_during_callback
+-- family: oracle
+-- severity: CRIT
+-- score: 0.90
+-- weight: 3
+-- description: Detects oracle price reads at non-zero call depth indicating price query during callback or flash loan
+FROM forensics
+| WHERE layer == "derived" AND derived_type == "price_reads" AND call_depth > 0
+| KEEP tx_hash, block_number, oracle_contract, price_value, call_depth
+| SORT call_depth DESC
+| LIMIT 50

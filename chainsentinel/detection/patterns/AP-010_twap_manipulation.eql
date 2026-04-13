@@ -1,0 +1,10 @@
+// pattern: AP-010
+// name: twap_manipulation
+// family: oracle_manipulation
+// confidence: 0.85
+// min_weight: 5
+// description: Sustained TWAP drift across multiple blocks with reserve ratio spikes from newly funded address
+sequence by investigation_id with maxspan=30m
+  [signal where signal_name == "twap_drift_detected"]
+  [signal where signal_name == "reserve_ratio_spike"]
+  [signal where signal_name == "address_funded_before_attack"]

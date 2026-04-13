@@ -1,0 +1,11 @@
+-- signal: new_address_first_interaction
+-- family: behavioural
+-- severity: LOW
+-- score: 0.30
+-- weight: 1
+-- description: Detects addresses with very low nonce interacting with contracts — newly created wallets
+FROM forensics
+| WHERE layer == "derived" AND derived_type == "nonce_tracking" AND nonce_before < 3
+| KEEP tx_hash, block_number, from_address, nonce_before, nonce_after
+| SORT block_number DESC
+| LIMIT 50

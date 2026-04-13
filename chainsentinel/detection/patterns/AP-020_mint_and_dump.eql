@@ -1,0 +1,10 @@
+// pattern: AP-020
+// name: mint_and_dump
+// family: rug_pull
+// confidence: 0.90
+// min_weight: 7
+// description: Large token mint from zero address followed by liquidity removal and value concentration
+sequence by tx_hash with maxspan=5m
+  [signal where signal_name == "mint_to_dump_ratio"]
+  [signal where signal_name == "liquidity_removal_spike"]
+  [signal where signal_name == "value_concentration"]

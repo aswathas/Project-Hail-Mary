@@ -1,9 +1,0 @@
-/* pattern: AP-008
-   name: Private Key Compromise / Access Control Abuse
-   confidence: 0.85
-   description: Ownership transfer to unknown address followed by large value extraction
-   required_signals: ownership_transferred, large_outflow, large_token_transfer
-*/
-sequence with maxspan=5m
-  [derived where action_type == "ownership_transfer"]
-  [signal where signal_name == "large_outflow" or signal_name == "large_token_transfer"]

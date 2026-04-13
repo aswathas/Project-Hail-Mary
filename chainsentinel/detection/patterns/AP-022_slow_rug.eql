@@ -1,0 +1,10 @@
+// pattern: AP-022
+// name: slow_rug
+// family: rug_pull
+// confidence: 0.75
+// min_weight: 5
+// description: Phase 2 — requires rolling window aggregation engine. Gradual drain with funded address and failed attempts pattern.
+sequence by investigation_id with maxspan=30m
+  [signal where signal_name == "drain_ratio_exceeded"]
+  [signal where signal_name == "address_funded_before_attack"]
+  [signal where signal_name == "failed_attempts_before_success"]

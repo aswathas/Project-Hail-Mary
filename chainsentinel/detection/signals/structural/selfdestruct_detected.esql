@@ -1,0 +1,11 @@
+-- signal: selfdestruct_detected
+-- family: structural
+-- severity: CRIT
+-- score: 0.95
+-- weight: 3
+-- description: Detects SELFDESTRUCT opcode usage which destroys a contract and sends remaining ETH
+FROM forensics
+| WHERE layer == "derived" AND derived_type == "execution_structure" AND call_type == "SELFDESTRUCT"
+| KEEP tx_hash, block_number, caller_address, callee_address, value_eth
+| SORT block_number DESC
+| LIMIT 50

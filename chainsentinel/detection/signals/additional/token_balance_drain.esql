@@ -1,0 +1,12 @@
+-- signal: token_balance_drain
+-- family: additional
+-- severity: CRIT
+-- score: 0.85
+-- weight: 3
+-- description: Detects large token transfers draining significant portion of a contract token balance
+FROM forensics
+| WHERE layer == "derived" AND derived_type == "token_transfer_graph"
+| STATS total_out = SUM(value_eth) BY from_address, token_address, tx_hash, block_number
+| WHERE total_out > 0
+| SORT total_out DESC
+| LIMIT 50

@@ -1,0 +1,12 @@
+-- signal: liquidity_removal_spike
+-- family: value
+-- severity: CRIT
+-- score: 0.90
+-- weight: 3
+-- description: Detects large liquidity removal events from DEX pools
+FROM forensics
+| WHERE layer == "derived" AND derived_type == "enriched_event_logs"
+| WHERE event_name LIKE "*RemoveLiquidity*" OR event_name LIKE "*Burn*" OR event_name == "RemoveLiquidity"
+| KEEP tx_hash, block_number, from_address, contract_address, value_eth
+| SORT block_number DESC
+| LIMIT 50

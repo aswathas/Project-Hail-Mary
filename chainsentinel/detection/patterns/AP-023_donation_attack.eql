@@ -1,0 +1,10 @@
+// pattern: AP-023
+// name: donation_attack
+// family: token_mechanism
+// confidence: 0.85
+// min_weight: 5
+// description: Direct balance donation inflates share price causing net negative balance for other depositors
+sequence by tx_hash with maxspan=5m
+  [signal where signal_name == "donation_balance_inflation"]
+  [signal where signal_name == "vault_share_price_spike"]
+  [signal where signal_name == "net_negative_contract_balance"]

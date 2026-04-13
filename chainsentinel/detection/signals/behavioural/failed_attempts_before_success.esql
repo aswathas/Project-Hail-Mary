@@ -1,0 +1,13 @@
+-- signal: failed_attempts_before_success
+-- family: behavioural
+-- severity: HIGH
+-- score: 0.70
+-- weight: 2
+-- description: Detects addresses with failed transactions followed by successful ones — trial and error attack pattern
+FROM forensics
+| WHERE layer == "derived" AND derived_type == "failed_attempt_history"
+| STATS fail_count = COUNT(*) BY from_address, to_address, block_number
+| WHERE fail_count >= 1
+| EVAL tx_hash = from_address
+| SORT fail_count DESC
+| LIMIT 50

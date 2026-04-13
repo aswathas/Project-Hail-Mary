@@ -1,0 +1,10 @@
+// pattern: AP-005
+// name: classic_flash_loan
+// family: flash_loan
+// confidence: 0.90
+// min_weight: 7
+// description: Flash loan bracket with large value inflow spike and contract drain exceeding 80 percent
+sequence by tx_hash with maxspan=5m
+  [signal where signal_name == "flashloan_bracket_detected"]
+  [signal where signal_name == "large_value_inflow_spike"]
+  [signal where signal_name == "drain_ratio_exceeded"]

@@ -1,0 +1,13 @@
+-- signal: deposit_withdraw_same_tx
+-- family: sequence
+-- severity: HIGH
+-- score: 0.80
+-- weight: 2
+-- description: Detects Deposit and Withdraw events occurring in the same transaction
+FROM forensics
+| WHERE layer == "derived" AND derived_type == "event_sequence"
+| WHERE event_name == "Deposit" OR event_name == "Withdraw"
+| STATS event_types = COUNT_DISTINCT(event_name), event_count = COUNT(*) BY tx_hash, block_number, contract_address
+| WHERE event_types >= 2
+| SORT event_count DESC
+| LIMIT 50

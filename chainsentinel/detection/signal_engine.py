@@ -185,18 +185,25 @@ def run_all_signals(
     signals = discover_signals(signals_dir)
     all_results = []
 
+    import logging
+    logger = logging.getLogger("chainsentinel.signals")
+
     for signal in signals:
         metadata = parse_signal_metadata(
             signal["query_text"], signal["name"], signal["family"]
         )
 
-        results = run_signal(
-            es_client, signal["query_text"],
-            metadata, investigation_id, chain_id
-        )
+        try:
+            results = run_signal(
+                es_client, signal["query_text"],
+                metadata, investigation_id, chain_id
+            )
 
-        if results:
-            ingest_fn(es_client, results, "forensics")
-            all_results.extend(results)
+            if results:
+                ingest_fn(es_client, results, "forensics")
+                all_results.extend(results)
+        except Exception as exc:
+            logger.warning("Signal %s failed (skipping): %s", signal["name"], exc)
+            continue
 
     return all_results

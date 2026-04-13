@@ -1,0 +1,10 @@
+// pattern: AP-009
+// name: amm_spot_price
+// family: oracle_manipulation
+// confidence: 0.90
+// min_weight: 7
+// description: AMM spot price manipulated via large swap, oracle reads manipulated price, reserve ratio spikes
+sequence by tx_hash with maxspan=5m
+  [signal where signal_name == "spot_price_manipulation"]
+  [signal where signal_name == "price_read_during_callback"]
+  [signal where signal_name == "reserve_ratio_spike"]

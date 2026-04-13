@@ -1,0 +1,10 @@
+// pattern: AP-003
+// name: read_only_reentrancy
+// family: reentrancy
+// confidence: 0.90
+// min_weight: 7
+// description: Read-only reentrancy where oracle price is read during callback with stale state and cross-contract dependency exploited
+sequence by tx_hash with maxspan=5m
+  [signal where signal_name == "price_read_during_callback"]
+  [signal where signal_name == "value_drain_per_depth"]
+  [signal where signal_name == "cross_contract_state_dependency"]

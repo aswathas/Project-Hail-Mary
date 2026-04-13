@@ -27,7 +27,10 @@ def test_make_doc_id_with_derived_type():
 
 def test_make_doc_id_with_derived_type_no_source_log():
     doc = {"tx_hash": "0xabc", "derived_type": "native_transfer"}
-    assert make_doc_id(doc) == "0xabc_native_transfer"
+    result = make_doc_id(doc)
+    # New format: {tx_hash}_{derived_type}_{hash_of_unique_fields}
+    assert result.startswith("0xabc_native_transfer_")
+    assert len(result) > len("0xabc_native_transfer_")
 
 
 def test_make_doc_id_transaction():

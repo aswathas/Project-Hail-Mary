@@ -5,16 +5,23 @@ Chains collector → normalizer → decoder → derived for each analysis mode.
 Does not perform ES indexing — collects all documents and returns them
 in the final 'complete' event for the server to ingest.
 """
+import logging
 import random
 import string
 from collections import Counter
+
+logger = logging.getLogger("chainsentinel.runner")
 from datetime import datetime, timezone
 from typing import AsyncGenerator
 
 from pipeline.collector import collect_transaction, collect_block_range
 from pipeline.normalizer import normalize_transaction, normalize_log
 from pipeline.decoder import load_decoder
-from pipeline.derived import derive_events, derive_events_from_tx, derive_events_from_trace
+from pipeline.derived import (
+    derive_events, derive_events_from_tx, derive_events_from_trace,
+    get_all_derived_builders as _get_new_builders,
+)
+import asyncio
 
 
 def generate_investigation_id() -> str:
@@ -41,6 +48,44 @@ def _sse(phase: str, msg: str, severity: str = "gray",
     }
     event.update(extra)
     return event
+
+
+async def _run_new_derived_builders(
+    normalized_tx: dict,
+    decoded_events: list[dict],
+    collector_doc: dict,
+    investigation_id: str,
+    config: dict,
+) -> list[dict]:
+    """Call all new-style derived builders from the derived/ package.
+
+    Assembles the raw_data dict each builder expects and collects results.
+    """
+    builders = _get_new_builders()
+    if not builders:
+        return []
+
+    results = []
+    for name, derive_fn in builders.items():
+        raw_data = {
+            "normalized_tx": normalized_tx,
+            "decoded_events": decoded_events,
+            "trace": collector_doc.get("trace"),
+            "tx_hash": normalized_tx.get("tx_hash", ""),
+            "block_number": normalized_tx.get("block_number", 0),
+            "block_datetime": normalized_tx.get("block_datetime", ""),
+        }
+        try:
+            if asyncio.iscoroutinefunction(derive_fn):
+                docs = await derive_fn(raw_data, investigation_id, config)
+            else:
+                docs = derive_fn(raw_data, investigation_id, config)
+            if docs:
+                results.extend(docs)
+        except Exception as exc:
+            logger.warning("Derived builder %s failed: %s", name, exc)
+
+    return results
 
 
 def _split_collector_doc(doc: dict) -> tuple[dict, dict, int]:
@@ -95,12 +140,13 @@ async def run_tx_analysis(
     documents for the server to ingest into Elasticsearch.
     """
     chain_id = config.get("chain_id", 31337)
+    rpc_url = config.get("rpc_url", "http://127.0.0.1:8545")
     raw_docs = []
     decoded_docs = []
     derived_docs = []
 
     # --- A. Collect -----------------------------------------------------------
-    collector_doc = await collect_transaction(w3, tx_hash, include_trace=True)
+    collector_doc = await collect_transaction(w3, tx_hash, include_trace=True, rpc_url=rpc_url)
     raw_docs.append(collector_doc)
 
     log_count = len(collector_doc.get("logs", []))
@@ -157,15 +203,13 @@ async def run_tx_analysis(
     )
 
     # --- D. Derive security events --------------------------------------------
-    # From decoded event logs
+    # Legacy derived builders (backward compatible)
     events_from_logs = derive_events(all_decoded_events, investigation_id)
     derived_docs.extend(events_from_logs)
 
-    # From the normalized transaction (native transfers, contract interactions)
     events_from_tx = derive_events_from_tx(normalized_tx, investigation_id)
     derived_docs.extend(events_from_tx)
 
-    # From call trace if available
     if collector_doc.get("trace"):
         events_from_trace = derive_events_from_trace(
             collector_doc["trace"],
@@ -175,6 +219,13 @@ async def run_tx_analysis(
             investigation_id,
         )
         derived_docs.extend(events_from_trace)
+
+    # New-style derived builders from derived/ package
+    new_derived = await _run_new_derived_builders(
+        normalized_tx, all_decoded_events, collector_doc,
+        investigation_id, config,
+    )
+    derived_docs.extend(new_derived)
 
     # Count derived event types
     type_counts = Counter(d.get("derived_type", "unknown") for d in derived_docs)
@@ -218,6 +269,7 @@ async def run_range_analysis(
     phase.
     """
     chain_id = config.get("chain_id", 31337)
+    rpc_url = config.get("rpc_url", "http://127.0.0.1:8545")
     raw_docs = []
     decoded_docs = []
     derived_docs = []
@@ -226,7 +278,7 @@ async def run_range_analysis(
     block_count = to_block - from_block + 1
 
     # --- A. Collect -----------------------------------------------------------
-    collector_docs = await collect_block_range(w3, from_block, to_block, include_traces=True)
+    collector_docs = await collect_block_range(w3, from_block, to_block, include_traces=True, rpc_url=rpc_url)
     raw_docs.extend(collector_docs)
 
     tx_count = len(collector_docs)
@@ -282,17 +334,16 @@ async def run_range_analysis(
     )
 
     # --- D. Derive security events --------------------------------------------
-    # From decoded event logs
+    # Legacy derived builders (backward compatible)
     events_from_logs = derive_events(all_decoded_events, investigation_id)
     derived_docs.extend(events_from_logs)
 
-    # From each normalized transaction
     for idx, normalized_tx in enumerate(normalized_txs):
         events_from_tx = derive_events_from_tx(normalized_tx, investigation_id)
         derived_docs.extend(events_from_tx)
 
-        # From call trace if available
         collector_doc = collector_docs[idx]
+        logger.debug("Tx %s trace present: %s", normalized_tx.get("tx_hash", "")[:12], bool(collector_doc.get("trace")))
         if collector_doc.get("trace"):
             events_from_trace = derive_events_from_trace(
                 collector_doc["trace"],
@@ -302,6 +353,14 @@ async def run_range_analysis(
                 investigation_id,
             )
             derived_docs.extend(events_from_trace)
+
+        # New-style derived builders from derived/ package
+        decoded_for_tx = [e for e in all_decoded_events if e.get("tx_hash") == normalized_tx.get("tx_hash")]
+        new_derived = await _run_new_derived_builders(
+            normalized_tx, decoded_for_tx, collector_doc,
+            investigation_id, config,
+        )
+        derived_docs.extend(new_derived)
 
     # Count derived event types
     type_counts = Counter(d.get("derived_type", "unknown") for d in derived_docs)

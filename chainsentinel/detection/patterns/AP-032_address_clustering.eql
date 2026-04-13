@@ -1,0 +1,10 @@
+// pattern: AP-032
+// name: address_clustering
+// family: graph_attribution
+// confidence: 0.80
+// min_weight: 4
+// description: Related addresses identified via shared deployer and common funding source
+sequence by investigation_id with maxspan=1h
+  [signal where signal_name == "address_cluster_identified"]
+  [signal where signal_name == "contract_creator_linked"]
+  [signal where signal_name == "address_funded_before_attack"]

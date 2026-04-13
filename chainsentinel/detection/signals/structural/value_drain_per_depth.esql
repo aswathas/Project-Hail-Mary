@@ -1,0 +1,12 @@
+-- signal: value_drain_per_depth
+-- family: structural
+-- severity: CRIT
+-- score: 0.90
+-- weight: 3
+-- description: Detects value extraction at multiple depths where same address re-appears with ETH outflow
+FROM forensics
+| WHERE layer == "derived" AND derived_type == "execution_structure" AND value_eth > 0
+| STATS total_value = SUM(value_eth), depth_count = COUNT_DISTINCT(call_depth), call_count = COUNT(*) BY callee_address, tx_hash, block_number
+| WHERE depth_count > 1 AND call_count > 1
+| SORT total_value DESC
+| LIMIT 50

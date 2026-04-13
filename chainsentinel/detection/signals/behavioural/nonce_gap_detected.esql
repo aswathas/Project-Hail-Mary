@@ -1,0 +1,11 @@
+-- signal: nonce_gap_detected
+-- family: behavioural
+-- severity: LOW
+-- score: 0.30
+-- weight: 1
+-- description: Detects nonce gaps indicating transactions submitted outside the observed block range
+FROM forensics
+| WHERE layer == "derived" AND derived_type == "nonce_tracking" AND nonce_delta > 1
+| KEEP tx_hash, block_number, from_address, nonce_before, nonce_after, nonce_delta
+| SORT nonce_delta DESC
+| LIMIT 50

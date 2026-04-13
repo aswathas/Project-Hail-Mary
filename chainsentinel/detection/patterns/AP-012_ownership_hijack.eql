@@ -1,0 +1,10 @@
+// pattern: AP-012
+// name: ownership_hijack
+// family: access_control
+// confidence: 0.90
+// min_weight: 6
+// description: Ownership transferred to attacker followed by event ordering violation and contract drain
+sequence by tx_hash with maxspan=5m
+  [signal where signal_name == "ownership_transfer_then_drain"]
+  [signal where signal_name == "event_order_violation"]
+  [signal where signal_name == "drain_ratio_exceeded"]

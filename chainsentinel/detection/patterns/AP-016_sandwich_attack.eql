@@ -1,0 +1,10 @@
+// pattern: AP-016
+// name: sandwich_attack
+// family: mev
+// confidence: 0.80
+// min_weight: 5
+// description: Reserve ratio spiked by frontrun swap, high gas used for priority, funds dispersed after backrun
+sequence by investigation_id with maxspan=30m
+  [signal where signal_name == "reserve_ratio_spike"]
+  [signal where signal_name == "high_gas_anomaly"]
+  [signal where signal_name == "fund_dispersion_post_attack"]

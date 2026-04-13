@@ -1,0 +1,11 @@
+-- signal: drain_ratio_exceeded
+-- family: value
+-- severity: CRIT
+-- score: 0.90
+-- weight: 3
+-- description: Detects transactions where drain ratio exceeds 80 percent of contract value
+FROM forensics
+| WHERE layer == "derived" AND derived_type == "value_flow_intra_tx" AND drain_ratio > 0.80
+| KEEP tx_hash, block_number, contract_address, total_in_eth, total_out_eth, net_eth, drain_ratio
+| SORT drain_ratio DESC
+| LIMIT 50

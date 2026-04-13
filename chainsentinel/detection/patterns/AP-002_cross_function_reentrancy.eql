@@ -1,0 +1,10 @@
+// pattern: AP-002
+// name: cross_function_reentrancy
+// family: reentrancy
+// confidence: 0.90
+// min_weight: 7
+// description: Cross-function reentrancy where different selectors called at different depths with delayed storage and deposit-withdraw in same tx
+sequence by tx_hash with maxspan=5m
+  [signal where signal_name == "cross_function_reentry"]
+  [signal where signal_name == "storage_update_delay"]
+  [signal where signal_name == "deposit_withdraw_same_tx"]

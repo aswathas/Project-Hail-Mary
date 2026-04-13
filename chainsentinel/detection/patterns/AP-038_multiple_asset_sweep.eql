@@ -1,0 +1,10 @@
+// pattern: AP-038
+// name: multiple_asset_sweep
+// family: structural
+// confidence: 0.85
+// min_weight: 5
+// description: Multiple token types drained from same contract with high drain ratio by newly deployed contract
+sequence by tx_hash with maxspan=5m
+  [signal where signal_name == "multiple_asset_drain_same_tx"]
+  [signal where signal_name == "drain_ratio_exceeded"]
+  [signal where signal_name == "same_block_deploy_and_attack"]

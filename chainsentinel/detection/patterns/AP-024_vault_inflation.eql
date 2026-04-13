@@ -1,0 +1,10 @@
+// pattern: AP-024
+// name: vault_inflation
+// family: token_mechanism
+// confidence: 0.85
+// min_weight: 7
+// description: Vault share price spiked via donation followed by large value inflow to exploit inflated shares
+sequence by investigation_id with maxspan=30m
+  [signal where signal_name == "vault_share_price_spike"]
+  [signal where signal_name == "donation_balance_inflation"]
+  [signal where signal_name == "large_value_inflow_spike"]

@@ -1,0 +1,11 @@
+-- signal: vault_share_price_spike
+-- family: value
+-- severity: CRIT
+-- score: 0.90
+-- weight: 3
+-- description: Detects abnormal vault share price changes exceeding 500 percent indicating donation attack or manipulation
+FROM forensics
+| WHERE layer == "derived" AND derived_type == "share_price_history" AND share_price_delta_pct > 500
+| KEEP tx_hash, block_number, contract_address, share_price_delta_pct
+| SORT share_price_delta_pct DESC
+| LIMIT 50

@@ -3,7 +3,28 @@ Collector — fetches raw chain data from any EVM RPC endpoint.
 Merges transaction + receipt into one document.
 Optionally fetches debug_traceTransaction (graceful if unavailable).
 """
+import httpx
+import logging
 from typing import Optional
+
+_log = logging.getLogger("chainsentinel.collector")
+
+
+async def _fetch_trace(rpc_url: str, tx_hash: str) -> dict | None:
+    """Fetch debug_traceTransaction via direct HTTP call (bypasses web3 async issues)."""
+    payload = {
+        "jsonrpc": "2.0",
+        "method": "debug_traceTransaction",
+        "params": [tx_hash, {"tracer": "callTracer"}],
+        "id": 1,
+    }
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            resp = await client.post(rpc_url, json=payload)
+            data = resp.json()
+            return data.get("result")
+    except Exception:
+        return None
 
 
 def _hex_to_int(val):
@@ -24,7 +45,7 @@ def _extract_hash(val):
     return s if s.startswith("0x") else "0x" + s
 
 
-async def collect_transaction(w3, tx_hash: str, include_trace: bool = False) -> dict:
+async def collect_transaction(w3, tx_hash: str, include_trace: bool = False, rpc_url: str = "http://127.0.0.1:8545") -> dict:
     """
     Fetch a transaction + receipt + block timestamp, merge into one document.
     Optionally fetch debug_traceTransaction.
@@ -67,19 +88,14 @@ async def collect_transaction(w3, tx_hash: str, include_trace: bool = False) -> 
     }
 
     if include_trace:
-        try:
-            trace = w3.manager.request_blocking(
-                "debug_traceTransaction", [tx_hash, {"tracer": "callTracer"}]
-            )
-            doc["trace"] = dict(trace) if trace else None
-        except Exception:
-            doc["trace"] = None
+        trace = await _fetch_trace(rpc_url, tx_hash)
+        doc["trace"] = dict(trace) if trace else None
 
     return doc
 
 
 async def collect_block_range(
-    w3, from_block: int, to_block: int, include_traces: bool = False
+    w3, from_block: int, to_block: int, include_traces: bool = False, rpc_url: str = "http://127.0.0.1:8545"
 ) -> list[dict]:
     """Fetch all transactions in a block range."""
     results = []
@@ -134,14 +150,9 @@ async def collect_block_range(
             }
 
             if include_traces:
-                try:
-                    trace = w3.manager.request_blocking(
-                        "debug_traceTransaction",
-                        [tx_hash, {"tracer": "callTracer"}],
-                    )
-                    doc["trace"] = dict(trace) if trace else None
-                except Exception:
-                    doc["trace"] = None
+                trace = await _fetch_trace(rpc_url, tx_hash)
+                doc["trace"] = dict(trace) if trace else None
+                _log.info("Trace fetch %s -> %s", tx_hash[:12], "ok" if trace else "none")
 
             results.append(doc)
 

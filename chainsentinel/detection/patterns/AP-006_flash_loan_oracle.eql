@@ -1,0 +1,11 @@
+// pattern: AP-006
+// name: flash_loan_oracle
+// family: flash_loan
+// confidence: 0.95
+// min_weight: 9
+// description: Flash loan used to manipulate spot price, oracle reads manipulated price during callback, victim drained
+sequence by tx_hash with maxspan=5m
+  [signal where signal_name == "flashloan_bracket_detected"]
+  [signal where signal_name == "spot_price_manipulation"]
+  [signal where signal_name == "price_read_during_callback"]
+  [signal where signal_name == "drain_ratio_exceeded"]

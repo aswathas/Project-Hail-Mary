@@ -144,6 +144,8 @@ async def analyze(request: AnalyzeRequest):
 
     investigation_id = generate_investigation_id()
     es_client = AsyncElasticsearch(hosts=[es_url])
+    # Merge request rpc_url into config so runners can use it for direct HTTP calls
+    run_config = {**config, "rpc_url": rpc_url}
 
     # Ensure ES indices exist
     try:
@@ -173,7 +175,7 @@ async def analyze(request: AnalyzeRequest):
                     w3=w3,
                     tx_hash=request.target,
                     investigation_id=investigation_id,
-                    config=config,
+                    config=run_config,
                 )
 
             elif request.mode == "range":
@@ -212,7 +214,7 @@ async def analyze(request: AnalyzeRequest):
                     from_block=int(from_block),
                     to_block=int(to_block),
                     investigation_id=investigation_id,
-                    config=config,
+                    config=run_config,
                 )
 
             elif request.mode in ("wallet", "watch"):

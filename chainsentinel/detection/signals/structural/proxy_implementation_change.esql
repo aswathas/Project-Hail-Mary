@@ -1,0 +1,12 @@
+-- signal: proxy_implementation_change
+-- family: structural
+-- severity: CRIT
+-- score: 0.90
+-- weight: 3
+-- description: Detects EIP-1967 proxy implementation slot changes indicating contract upgrade
+FROM forensics
+| WHERE layer == "derived" AND derived_type == "storage_mutations"
+| WHERE slot_hex == "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc"
+| KEEP tx_hash, block_number, contract_address, slot_hex, value_before, value_after
+| SORT block_number DESC
+| LIMIT 50

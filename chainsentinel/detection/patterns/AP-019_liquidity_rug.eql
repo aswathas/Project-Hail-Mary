@@ -1,0 +1,10 @@
+// pattern: AP-019
+// name: liquidity_rug
+// family: rug_pull
+// confidence: 0.90
+// min_weight: 5
+// description: Massive liquidity removal draining pool, funded by recently created address
+sequence by tx_hash with maxspan=5m
+  [signal where signal_name == "liquidity_removal_spike"]
+  [signal where signal_name == "drain_ratio_exceeded"]
+  [signal where signal_name == "address_funded_before_attack"]

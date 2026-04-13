@@ -1,0 +1,10 @@
+// pattern: AP-007
+// name: flash_loan_governance
+// family: flash_loan
+// confidence: 0.90
+// min_weight: 7
+// description: Flash loan used to acquire voting power for instant governance execution followed by drain
+sequence by tx_hash with maxspan=5m
+  [signal where signal_name == "flashloan_bracket_detected"]
+  [signal where signal_name == "governance_instant_execution"]
+  [signal where signal_name == "drain_ratio_exceeded"]

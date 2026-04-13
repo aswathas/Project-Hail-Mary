@@ -1,0 +1,11 @@
+-- signal: reserve_ratio_spike
+-- family: oracle
+-- severity: HIGH
+-- score: 0.75
+-- weight: 2
+-- description: Detects Swap events with large amounts relative to pool reserves indicating price impact
+FROM forensics
+| WHERE layer == "derived" AND derived_type == "enriched_event_logs" AND event_name == "Swap"
+| KEEP tx_hash, block_number, contract_address, from_address, value_eth
+| SORT value_eth DESC
+| LIMIT 50

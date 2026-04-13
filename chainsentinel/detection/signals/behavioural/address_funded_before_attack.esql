@@ -1,0 +1,12 @@
+-- signal: address_funded_before_attack
+-- family: behavioural
+-- severity: HIGH
+-- score: 0.70
+-- weight: 2
+-- description: Detects addresses receiving their first ETH funding within the investigation block range
+FROM forensics
+| WHERE layer == "derived" AND derived_type == "eth_transfers"
+| STATS first_block = MIN(block_number), total_received = SUM(value_eth) BY to_address
+| EVAL tx_hash = to_address, block_number = first_block
+| SORT first_block ASC
+| LIMIT 50

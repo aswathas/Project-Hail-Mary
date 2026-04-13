@@ -1,0 +1,15 @@
+-- signal: twap_drift_detected
+-- family: oracle
+-- severity: HIGH
+-- score: 0.70
+-- weight: 2
+-- description: Detects sustained oracle price drift across multiple blocks indicating manipulation
+FROM forensics
+| WHERE layer == "derived" AND derived_type == "price_reads"
+| STATS avg_price = AVG(price_value), min_price = MIN(price_value), max_price = MAX(price_value), read_count = COUNT(*) BY oracle_contract, block_number
+| WHERE read_count >= 1 AND max_price > 0 AND min_price > 0
+| EVAL drift_pct = ((max_price - min_price) * 100) / min_price
+| WHERE drift_pct > 5
+| EVAL tx_hash = oracle_contract
+| SORT drift_pct DESC
+| LIMIT 50

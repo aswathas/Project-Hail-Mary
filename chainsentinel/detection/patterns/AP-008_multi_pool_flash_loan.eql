@@ -1,0 +1,10 @@
+// pattern: AP-008
+// name: multi_pool_flash_loan
+// family: flash_loan
+// confidence: 0.85
+// min_weight: 5
+// description: Flash loan combined with large inflows and value concentration from multiple sources
+sequence by tx_hash with maxspan=5m
+  [signal where signal_name == "flashloan_bracket_detected"]
+  [signal where signal_name == "large_value_inflow_spike"]
+  [signal where signal_name == "value_concentration"]

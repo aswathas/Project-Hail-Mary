@@ -1,9 +1,0 @@
-/* pattern: AP-001
-   name: Flash Loan Oracle Manipulation
-   confidence: 0.90
-   description: Flash loan used to manipulate DEX pool, read stale oracle, drain victim protocol
-   required_signals: flash_loan_detected, large_token_transfer
-*/
-sequence with maxspan=5m
-  [signal where signal_name == "flash_loan_detected" or signal_name == "flash_loan_with_drain"]
-  [signal where signal_name == "large_token_transfer" or signal_name == "large_outflow"]

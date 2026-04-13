@@ -1,0 +1,10 @@
+// pattern: AP-004
+// name: erc777_hook_reentrancy
+// family: reentrancy
+// confidence: 0.85
+// min_weight: 5
+// description: ERC-777 tokensReceived hook triggers recursive calls with delayed storage update
+sequence by tx_hash with maxspan=5m
+  [signal where signal_name == "hook_callback_detected"]
+  [signal where signal_name == "storage_update_delay"]
+  [signal where signal_name == "recursive_depth_pattern"]

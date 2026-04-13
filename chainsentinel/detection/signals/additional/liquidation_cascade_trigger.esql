@@ -1,0 +1,12 @@
+-- signal: liquidation_cascade_trigger
+-- family: additional
+-- severity: HIGH
+-- score: 0.75
+-- weight: 2
+-- description: Detects 3 or more liquidation events within a short block range indicating cascade
+FROM forensics
+| WHERE layer == "derived" AND derived_type == "liquidation_events"
+| STATS liq_count = COUNT(*) BY block_number, tx_hash
+| WHERE liq_count >= 3
+| SORT liq_count DESC
+| LIMIT 50

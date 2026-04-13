@@ -1,0 +1,11 @@
+-- signal: contract_deployed_before_attack
+-- family: behavioural
+-- severity: HIGH
+-- score: 0.70
+-- weight: 2
+-- description: Detects new contract deployments within the investigation block range
+FROM forensics
+| WHERE layer == "derived" AND derived_type == "contract_deployments"
+| KEEP tx_hash, block_number, deployer_address, contract_address, bytecode_size_bytes
+| SORT block_number DESC
+| LIMIT 50

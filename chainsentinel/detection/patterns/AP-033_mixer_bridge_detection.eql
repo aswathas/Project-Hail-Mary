@@ -1,0 +1,9 @@
+// pattern: AP-033
+// name: mixer_bridge_detection
+// family: graph_attribution
+// confidence: 0.85
+// min_weight: 3
+// description: Funds traced through mixer or bridge contract with multi-hop trail indicating laundering
+sequence by investigation_id with maxspan=1h
+  [signal where signal_name == "mixer_interaction_detected"]
+  [signal where signal_name == "multi_hop_fund_trail"]

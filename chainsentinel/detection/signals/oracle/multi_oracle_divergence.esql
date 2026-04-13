@@ -1,0 +1,12 @@
+-- signal: multi_oracle_divergence
+-- family: oracle
+-- severity: CRIT
+-- score: 0.90
+-- weight: 3
+-- description: Detects multiple distinct oracles queried in the same transaction — potential arbitrage between oracle sources
+FROM forensics
+| WHERE layer == "derived" AND derived_type == "price_reads"
+| STATS oracle_count = COUNT_DISTINCT(oracle_contract) BY tx_hash, block_number
+| WHERE oracle_count >= 2
+| SORT oracle_count DESC
+| LIMIT 50

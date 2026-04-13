@@ -1,0 +1,10 @@
+// pattern: AP-036
+// name: liquidation_cascade
+// family: graph_attribution
+// confidence: 0.85
+// min_weight: 7
+// description: Intentional liquidation cascade triggered by spot price manipulation and reserve ratio spike
+sequence by investigation_id with maxspan=30m
+  [signal where signal_name == "liquidation_cascade_trigger"]
+  [signal where signal_name == "spot_price_manipulation"]
+  [signal where signal_name == "reserve_ratio_spike"]

@@ -1,0 +1,12 @@
+-- signal: cross_contract_state_dependency
+-- family: additional
+-- severity: HIGH
+-- score: 0.75
+-- weight: 2
+-- description: Detects STATICCALL reading potentially stale state from a contract modified earlier in same tx
+FROM forensics
+| WHERE layer == "derived" AND derived_type == "execution_structure"
+| WHERE call_type == "STATICCALL"
+| KEEP tx_hash, block_number, caller_address, callee_address, call_depth, call_index, func_selector
+| SORT call_index ASC
+| LIMIT 50

@@ -1,0 +1,10 @@
+// pattern: AP-018
+// name: liquidation_manipulation
+// family: mev
+// confidence: 0.85
+// min_weight: 7
+// description: Price manipulated to trigger liquidation cascade for profit extraction
+sequence by investigation_id with maxspan=30m
+  [signal where signal_name == "spot_price_manipulation"]
+  [signal where signal_name == "reserve_ratio_spike"]
+  [signal where signal_name == "liquidation_cascade_trigger"]

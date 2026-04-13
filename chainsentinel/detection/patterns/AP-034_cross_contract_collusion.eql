@@ -1,0 +1,10 @@
+// pattern: AP-034
+// name: cross_contract_collusion
+// family: graph_attribution
+// confidence: 0.85
+// min_weight: 6
+// description: Multiple contracts from same deployer cluster exhibit coordinated event ordering anomalies
+sequence by investigation_id with maxspan=1h
+  [signal where signal_name == "address_cluster_identified"]
+  [signal where signal_name == "contract_creator_linked"]
+  [signal where signal_name == "event_order_violation"]

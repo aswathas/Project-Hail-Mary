@@ -1,0 +1,13 @@
+-- signal: address_cluster_identified
+-- family: graph
+-- severity: HIGH
+-- score: 0.70
+-- weight: 2
+-- description: Detects same deployer address creating multiple contracts — potential attacker infrastructure
+FROM forensics
+| WHERE layer == "derived" AND derived_type == "contract_creator_graph"
+| STATS contract_count = COUNT_DISTINCT(contract_address) BY deployer_address, block_number
+| WHERE contract_count >= 2
+| EVAL tx_hash = deployer_address, from_address = deployer_address
+| SORT contract_count DESC
+| LIMIT 50

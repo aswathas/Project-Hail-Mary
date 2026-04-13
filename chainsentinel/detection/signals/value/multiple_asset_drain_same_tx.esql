@@ -1,0 +1,12 @@
+-- signal: multiple_asset_drain_same_tx
+-- family: value
+-- severity: HIGH
+-- score: 0.80
+-- weight: 2
+-- description: Detects multiple distinct token types transferred from same contract in a single transaction
+FROM forensics
+| WHERE layer == "derived" AND derived_type == "token_transfer_graph"
+| STATS token_count = COUNT_DISTINCT(token_address) BY from_address, tx_hash, block_number
+| WHERE token_count > 2
+| SORT token_count DESC
+| LIMIT 50

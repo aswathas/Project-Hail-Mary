@@ -1,0 +1,11 @@
+-- signal: large_value_inflow_spike
+-- family: value
+-- severity: HIGH
+-- score: 0.75
+-- weight: 2
+-- description: Detects large ETH inflows exceeding baseline threshold
+FROM forensics
+| WHERE layer == "derived" AND derived_type == "eth_transfers" AND value_eth > 5.0
+| KEEP tx_hash, block_number, from_address, to_address, value_eth
+| SORT value_eth DESC
+| LIMIT 50

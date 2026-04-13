@@ -1,0 +1,11 @@
+-- signal: price_before_after_mismatch
+-- family: oracle
+-- severity: HIGH
+-- score: 0.75
+-- weight: 2
+-- description: Detects oracle price changes between consecutive blocks indicating potential manipulation
+FROM forensics
+| WHERE layer == "derived" AND derived_type == "price_reads"
+| STATS avg_price = AVG(price_value), read_count = COUNT(*) BY oracle_contract, block_number
+| SORT oracle_contract, block_number
+| LIMIT 100

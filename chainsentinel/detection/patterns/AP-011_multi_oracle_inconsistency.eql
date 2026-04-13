@@ -1,0 +1,10 @@
+// pattern: AP-011
+// name: multi_oracle_inconsistency
+// family: oracle_manipulation
+// confidence: 0.85
+// min_weight: 5
+// description: Multiple oracles queried in same tx return divergent prices, followed by drain
+sequence by tx_hash with maxspan=5m
+  [signal where signal_name == "multi_oracle_divergence"]
+  [signal where signal_name == "price_before_after_mismatch"]
+  [signal where signal_name == "drain_ratio_exceeded"]

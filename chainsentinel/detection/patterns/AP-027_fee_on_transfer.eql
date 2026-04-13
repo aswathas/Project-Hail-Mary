@@ -1,0 +1,9 @@
+// pattern: AP-027
+// name: fee_on_transfer
+// family: token_mechanism
+// confidence: 0.75
+// min_weight: 2
+// description: Fee-on-transfer token exploited where sent amount differs from received amount with event mismatch
+sequence by tx_hash with maxspan=5m
+  [signal where signal_name == "fee_on_transfer_discrepancy"]
+  [signal where signal_name == "event_parameter_mismatch"]

@@ -1,0 +1,10 @@
+// pattern: AP-029
+// name: signature_replay
+// family: token_mechanism
+// confidence: 0.85
+// min_weight: 3
+// description: EIP-712 signature replayed with nonce gap and permit used for unauthorized token drain
+sequence by tx_hash with maxspan=5m
+  [signal where signal_name == "eip712_replay_detected"]
+  [signal where signal_name == "nonce_gap_detected"]
+  [signal where signal_name == "permit_used_before_owner_approval"]

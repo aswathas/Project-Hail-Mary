@@ -1,0 +1,13 @@
+-- signal: rebasing_balance_manipulation
+-- family: additional
+-- severity: HIGH
+-- score: 0.70
+-- weight: 2
+-- description: Detects balance changes in storage without corresponding Transfer event (rebasing token behavior)
+FROM forensics
+| WHERE layer == "derived" AND derived_type == "storage_mutations"
+| WHERE slot_type == "state_variable" AND is_new_slot == false
+| WHERE value_before != value_after
+| KEEP tx_hash, block_number, contract_address, slot_hex, value_before, value_after
+| SORT block_number DESC
+| LIMIT 50

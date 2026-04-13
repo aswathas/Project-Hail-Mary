@@ -1,0 +1,12 @@
+-- signal: initialize_on_live_contract
+-- family: structural
+-- severity: CRIT
+-- score: 0.90
+-- weight: 3
+-- description: Detects initialize() called at top-level on an already deployed contract — possible re-initialization attack
+FROM forensics
+| WHERE layer == "derived" AND derived_type == "execution_structure"
+| WHERE call_depth == 0 AND func_name LIKE "*initialize*"
+| KEEP tx_hash, block_number, callee_address, func_name, func_selector
+| SORT block_number DESC
+| LIMIT 50

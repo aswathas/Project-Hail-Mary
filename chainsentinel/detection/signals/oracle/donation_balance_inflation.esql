@@ -1,0 +1,11 @@
+-- signal: donation_balance_inflation
+-- family: oracle
+-- severity: CRIT
+-- score: 0.90
+-- weight: 3
+-- description: Detects direct balance donations that inflate contract balance without going through deposit functions
+FROM forensics
+| WHERE layer == "derived" AND derived_type == "donation_tracker"
+| KEEP tx_hash, block_number, contract_address, donation_value_eth, from_address
+| SORT donation_value_eth DESC
+| LIMIT 50

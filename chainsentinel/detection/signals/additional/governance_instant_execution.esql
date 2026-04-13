@@ -1,0 +1,12 @@
+-- signal: governance_instant_execution
+-- family: additional
+-- severity: CRIT
+-- score: 0.90
+-- weight: 3
+-- description: Detects governance proposal created and executed in same transaction or single block
+FROM forensics
+| WHERE layer == "derived" AND derived_type == "governance_actions"
+| STATS action_count = COUNT(*), action_types = COUNT_DISTINCT(action_type) BY tx_hash, block_number, contract_address
+| WHERE action_count >= 2 AND action_types >= 2
+| SORT action_count DESC
+| LIMIT 50

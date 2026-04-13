@@ -1,0 +1,9 @@
+// pattern: AP-031
+// name: fund_dispersion
+// family: graph_attribution
+// confidence: 0.80
+// min_weight: 4
+// description: Post-attack fund splitting to multiple recipients detected via dispersion patterns
+sequence by investigation_id with maxspan=1h
+  [signal where signal_name == "fund_dispersion_post_attack"]
+  [signal where signal_name == "value_dispersion"]

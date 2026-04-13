@@ -1,0 +1,10 @@
+// pattern: AP-037
+// name: metamorphic_contract
+// family: structural
+// confidence: 0.90
+// min_weight: 9
+// description: CREATE2 used to redeploy contract at same address after self-destruct, enabling code replacement attack
+sequence by investigation_id with maxspan=30m
+  [signal where signal_name == "create2_redeployment"]
+  [signal where signal_name == "selfdestruct_detected"]
+  [signal where signal_name == "drain_ratio_exceeded"]

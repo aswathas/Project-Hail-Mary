@@ -1,0 +1,14 @@
+-- signal: same_block_deploy_and_attack
+-- family: behavioural
+-- severity: CRIT
+-- score: 0.95
+-- weight: 3
+-- description: Detects contract deployment and high-value interaction in the same block by the same address
+FROM forensics
+| WHERE layer == "derived" AND derived_type == "contract_deployments"
+| STATS deploy_count = COUNT(*) BY deployer_address, block_number
+| WHERE deploy_count >= 1
+| RENAME deployer_address AS from_address
+| EVAL tx_hash = from_address
+| SORT block_number DESC
+| LIMIT 50

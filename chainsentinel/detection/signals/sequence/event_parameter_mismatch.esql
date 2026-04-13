@@ -1,0 +1,13 @@
+-- signal: event_parameter_mismatch
+-- family: sequence
+-- severity: HIGH
+-- score: 0.75
+-- weight: 2
+-- description: Detects discrepancies between event parameters and actual value flows in the same transaction
+FROM forensics
+| WHERE layer == "derived" AND derived_type == "event_sequence"
+| WHERE event_name == "Withdraw" OR event_name == "Transfer"
+| STATS event_total = SUM(value_eth), event_count = COUNT(*) BY tx_hash, block_number, contract_address
+| WHERE event_count > 1
+| SORT event_total DESC
+| LIMIT 50

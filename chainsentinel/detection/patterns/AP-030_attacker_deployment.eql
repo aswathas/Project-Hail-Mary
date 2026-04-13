@@ -1,0 +1,10 @@
+// pattern: AP-030
+// name: attacker_deployment
+// family: graph_attribution
+// confidence: 0.85
+// min_weight: 5
+// description: Attacker infrastructure setup — new contract deployed by newly funded address with low nonce
+sequence by investigation_id with maxspan=1h
+  [signal where signal_name == "contract_deployed_before_attack"]
+  [signal where signal_name == "address_funded_before_attack"]
+  [signal where signal_name == "new_address_first_interaction"]

@@ -5,6 +5,8 @@ All ingest is idempotent: document _id is derived deterministically from
 tx_hash + log_index (or tx_hash + derived_type / tx_hash + doc_type),
 so rerunning an analysis against the same data produces no duplicates.
 """
+import hashlib
+import json
 import logging
 from datetime import datetime, timezone
 
@@ -13,24 +15,54 @@ from elasticsearch.helpers import async_bulk
 logger = logging.getLogger(__name__)
 
 
+def _hash_unique_fields(doc: dict) -> str:
+    """Hash non-core fields to produce a short unique suffix for IDs."""
+    exclude = {
+        "investigation_id", "layer", "derived_type", "tx_hash",
+        "block_number", "block_datetime", "@timestamp",
+        "source_tx_hash", "source_log_index", "source_layer",
+    }
+    unique_data = {k: v for k, v in sorted(doc.items()) if k not in exclude and v is not None}
+    raw = json.dumps(unique_data, sort_keys=True, default=str)
+    return hashlib.sha256(raw.encode()).hexdigest()[:12]
+
+
 def make_doc_id(doc: dict) -> str:
     """Generate a deterministic _id from document fields.
 
     Priority:
-      1. tx_hash + log_index  (event-level records)
-      2. tx_hash + derived_type (derived security events)
-      3. tx_hash + doc_type   (raw records typed by collector)
-      4. tx_hash + "_tx"      (bare transactions)
-      5. tx_hash alone        (fallback)
+      1. Signal docs: {investigation_id}_{signal_name}_{tx_hash}
+      2. Alert docs:  {investigation_id}_{pattern_id}
+      3. tx_hash + log_index  (event-level records — decoded logs)
+      4. Derived with source_log_index: {tx_hash}_{source_log_index}_{derived_type}
+      5. Derived without source_log_index: {tx_hash}_{derived_type}_{hash}
+      6. tx_hash + doc_type   (raw records typed by collector)
+      7. tx_hash + "_tx"      (bare transactions)
     """
+    inv_id = doc.get("investigation_id", "")
     tx_hash = doc.get("tx_hash", doc.get("source_tx_hash", "unknown"))
 
-    if doc.get("log_index") is not None:
+    # Signal documents
+    if doc.get("layer") == "signal" and doc.get("signal_name"):
+        return f"{inv_id}_{doc['signal_name']}_{tx_hash}"
+
+    # Alert documents
+    if doc.get("layer") == "alert" and doc.get("pattern_id"):
+        return f"{inv_id}_{doc['pattern_id']}"
+
+    # Decoded event logs (have log_index but no derived_type)
+    if doc.get("log_index") is not None and not doc.get("derived_type"):
         return f"{tx_hash}_{doc['log_index']}"
-    if doc.get("source_log_index") is not None and doc.get("derived_type"):
+
+    # Derived docs with source_log_index (trace-based, event-based)
+    if doc.get("derived_type") and doc.get("source_log_index") is not None:
         return f"{tx_hash}_{doc['source_log_index']}_{doc['derived_type']}"
+
+    # Derived docs without source_log_index (tx-based derived types)
     if doc.get("derived_type"):
-        return f"{tx_hash}_{doc['derived_type']}"
+        suffix = _hash_unique_fields(doc)
+        return f"{tx_hash}_{doc['derived_type']}_{suffix}"
+
     if doc.get("doc_type"):
         return f"{tx_hash}_{doc['doc_type']}"
 

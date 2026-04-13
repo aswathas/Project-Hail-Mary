@@ -1,0 +1,11 @@
+-- signal: permit_used_before_owner_approval
+-- family: additional
+-- severity: CRIT
+-- score: 0.90
+-- weight: 3
+-- description: Detects permit() followed by transferFrom in same tx draining tokens without prior approval
+FROM forensics
+| WHERE layer == "derived" AND derived_type == "permit_usage_log"
+| KEEP tx_hash, block_number, permit_owner, permit_spender, token_address, signature_hash, deadline
+| SORT block_number DESC
+| LIMIT 50

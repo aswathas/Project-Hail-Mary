@@ -1,0 +1,12 @@
+-- signal: hook_callback_detected
+-- family: structural
+-- severity: HIGH
+-- score: 0.80
+-- weight: 2
+-- description: Detects ERC-777 tokensReceived or similar hook callbacks at non-zero call depth
+FROM forensics
+| WHERE layer == "derived" AND derived_type == "execution_structure"
+| WHERE call_depth > 0 AND (func_selector == "0x0023de29" OR func_selector == "0x150b7a02" OR func_selector == "0xf23a6e61")
+| KEEP tx_hash, block_number, callee_address, caller_address, func_selector, call_depth
+| SORT call_depth DESC
+| LIMIT 50

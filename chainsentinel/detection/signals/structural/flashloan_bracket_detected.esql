@@ -1,0 +1,12 @@
+-- signal: flashloan_bracket_detected
+-- family: structural
+-- severity: CRIT
+-- score: 0.90
+-- weight: 3
+-- description: Detects flash loan pattern where large outflow and inflow occur in same tx with net positive result
+FROM forensics
+| WHERE layer == "derived" AND derived_type == "value_flow_intra_tx"
+| WHERE total_out_eth > 10.0 AND net_eth >= 0
+| KEEP tx_hash, block_number, contract_address, total_in_eth, total_out_eth, net_eth
+| SORT total_out_eth DESC
+| LIMIT 50

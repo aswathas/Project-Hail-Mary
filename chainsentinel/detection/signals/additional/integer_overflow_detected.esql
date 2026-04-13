@@ -1,0 +1,12 @@
+-- signal: integer_overflow_detected
+-- family: additional
+-- severity: CRIT
+-- score: 0.85
+-- weight: 3
+-- description: Detects value wrapping around uint256 max boundary in storage mutations (pre-0.8 or unchecked)
+FROM forensics
+| WHERE layer == "derived" AND derived_type == "storage_mutations"
+| WHERE value_after == "0x0000000000000000000000000000000000000000000000000000000000000000" OR value_after LIKE "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff*"
+| KEEP tx_hash, block_number, contract_address, slot_hex, value_before, value_after
+| SORT block_number DESC
+| LIMIT 50

@@ -1,0 +1,12 @@
+-- signal: contract_creator_linked
+-- family: graph
+-- severity: CRIT
+-- score: 0.85
+-- weight: 3
+-- description: Detects when attack and victim-interacting contracts share the same deployer address
+FROM forensics
+| WHERE layer == "derived" AND derived_type == "contract_deployments"
+| STATS deploy_count = COUNT(*) BY deployer_address, tx_hash, block_number
+| WHERE deploy_count >= 2
+| SORT deploy_count DESC
+| LIMIT 50

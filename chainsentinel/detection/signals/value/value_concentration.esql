@@ -1,0 +1,13 @@
+-- signal: value_concentration
+-- family: value
+-- severity: LOW
+-- score: 0.40
+-- weight: 1
+-- description: Detects value concentration where 3 or more distinct addresses send to the same recipient in a narrow block range
+FROM forensics
+| WHERE layer == "derived" AND derived_type == "value_flow_graph"
+| STATS sender_count = COUNT_DISTINCT(from_address), total_value = SUM(value_eth) BY to_address, block_number
+| WHERE sender_count >= 3
+| EVAL tx_hash = to_address
+| SORT total_value DESC
+| LIMIT 50

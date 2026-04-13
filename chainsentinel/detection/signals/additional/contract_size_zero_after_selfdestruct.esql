@@ -1,0 +1,12 @@
+-- signal: contract_size_zero_after_selfdestruct
+-- family: additional
+-- severity: HIGH
+-- score: 0.80
+-- weight: 2
+-- description: Detects SELFDESTRUCT execution leaving contract with zero bytecode
+FROM forensics
+| WHERE layer == "derived" AND derived_type == "execution_structure"
+| WHERE call_type == "SELFDESTRUCT"
+| KEEP tx_hash, block_number, caller_address, callee_address, call_depth, value_eth
+| SORT block_number DESC
+| LIMIT 50

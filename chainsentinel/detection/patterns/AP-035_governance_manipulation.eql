@@ -1,0 +1,10 @@
+// pattern: AP-035
+// name: governance_manipulation
+// family: graph_attribution
+// confidence: 0.85
+// min_weight: 5
+// description: Governance proposal instantly executed using flash loan voting power followed by drain
+sequence by tx_hash with maxspan=5m
+  [signal where signal_name == "governance_instant_execution"]
+  [signal where signal_name == "flashloan_bracket_detected"]
+  [signal where signal_name == "drain_ratio_exceeded"]

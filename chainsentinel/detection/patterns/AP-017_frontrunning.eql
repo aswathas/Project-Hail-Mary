@@ -1,0 +1,10 @@
+// pattern: AP-017
+// name: frontrunning
+// family: mev
+// confidence: 0.75
+// min_weight: 3
+// description: High gas transaction from new address with event ordering anomaly indicating frontrun
+sequence by investigation_id with maxspan=30m
+  [signal where signal_name == "high_gas_anomaly"]
+  [signal where signal_name == "new_address_first_interaction"]
+  [signal where signal_name == "event_order_violation"]

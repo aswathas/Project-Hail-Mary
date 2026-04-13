@@ -1,0 +1,12 @@
+-- signal: mixer_interaction_detected
+-- family: graph
+-- severity: CRIT
+-- score: 0.90
+-- weight: 3
+-- description: Detects fund flows to known mixer contracts such as Tornado Cash
+FROM forensics
+| WHERE layer == "derived" AND derived_type == "fund_hop_chains"
+| WHERE to_address == "0xd90e2f925da726b50c4ed8d0fb90ad053324f31b" OR to_address == "0x722122df12d4e14e13ac3b6895a86e84145b6967" OR to_address == "0xdd4c48c0b24039969fc16d1cdf626eab821d3384"
+| KEEP tx_hash, block_number, from_address, to_address, value_eth, hop_index
+| SORT hop_index ASC
+| LIMIT 50

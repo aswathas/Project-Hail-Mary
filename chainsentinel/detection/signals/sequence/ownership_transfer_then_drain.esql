@@ -1,0 +1,12 @@
+-- signal: ownership_transfer_then_drain
+-- family: sequence
+-- severity: CRIT
+-- score: 0.95
+-- weight: 3
+-- description: Detects OwnershipTransferred event followed by large value drain from the same contract
+FROM forensics
+| WHERE layer == "derived" AND derived_type == "enriched_event_logs"
+| WHERE event_name == "OwnershipTransferred"
+| KEEP tx_hash, block_number, contract_address, from_address, to_address
+| SORT block_number DESC
+| LIMIT 50

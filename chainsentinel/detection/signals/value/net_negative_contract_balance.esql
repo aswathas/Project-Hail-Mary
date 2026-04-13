@@ -1,0 +1,11 @@
+-- signal: net_negative_contract_balance
+-- family: value
+-- severity: CRIT
+-- score: 0.90
+-- weight: 3
+-- description: Detects contracts that lost ETH in a transaction — net outflow indicates possible drain
+FROM forensics
+| WHERE layer == "derived" AND derived_type == "value_flow_intra_tx" AND net_eth < 0
+| KEEP tx_hash, block_number, contract_address, total_in_eth, total_out_eth, net_eth
+| SORT net_eth ASC
+| LIMIT 50

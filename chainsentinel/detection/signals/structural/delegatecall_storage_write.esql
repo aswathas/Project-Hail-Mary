@@ -1,0 +1,11 @@
+-- signal: delegatecall_storage_write
+-- family: structural
+-- severity: CRIT
+-- score: 0.90
+-- weight: 3
+-- description: Detects DELEGATECALL usage which allows callee to write to caller storage
+FROM forensics
+| WHERE layer == "derived" AND derived_type == "execution_structure" AND call_type == "DELEGATECALL"
+| KEEP tx_hash, block_number, caller_address, callee_address, call_depth, func_selector, value_eth
+| SORT call_depth DESC
+| LIMIT 50

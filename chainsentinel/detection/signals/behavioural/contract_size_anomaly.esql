@@ -1,0 +1,12 @@
+-- signal: contract_size_anomaly
+-- family: behavioural
+-- severity: LOW
+-- score: 0.35
+-- weight: 1
+-- description: Detects contracts with anomalous bytecode size — very small or very large
+FROM forensics
+| WHERE layer == "derived" AND derived_type == "contract_deployments"
+| WHERE bytecode_size_bytes < 500 OR bytecode_size_bytes > 10000
+| KEEP tx_hash, block_number, deployer_address, contract_address, bytecode_size_bytes
+| SORT bytecode_size_bytes DESC
+| LIMIT 50
