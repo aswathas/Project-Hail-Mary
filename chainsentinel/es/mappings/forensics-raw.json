@@ -35,6 +35,7 @@
       "log_address": { "type": "keyword" },
       "topics": { "type": "keyword" },
       "data": { "type": "keyword", "index": false, "doc_values": false },
+      "decode_status": { "type": "keyword" },
 
       "trace_type": { "type": "keyword" },
       "trace_depth": { "type": "integer" },
