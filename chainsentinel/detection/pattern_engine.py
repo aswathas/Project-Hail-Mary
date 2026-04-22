@@ -48,25 +48,31 @@ def parse_pattern_metadata(
     query_text: str, pattern_id: str, pattern_name: str
 ) -> dict:
     """
-    Extract metadata from .eql block comment headers.
-    Format:
+    Extract metadata from .eql comment headers.
+    Supports two formats:
+
+    Block comment style:
         /* pattern: AP-001
            name: Flash Loan Oracle Manipulation
            confidence: 0.90
            description: ...
            required_signals: signal1, signal2, signal3
         */
+
+    Line comment style (used by current .eql files):
+        // pattern: AP-001
+        // name: Classic Reentrancy
+        // confidence: 0.95
+        // description: ...
     """
     confidence = 0.5
     description = f"Pattern {pattern_id} matched"
     required_signals = []
     display_name = pattern_name.replace("_", " ").title()
 
-    # Extract block comment
-    block_match = re.search(r"/\*(.*?)\*/", query_text, re.DOTALL)
-    if block_match:
-        block = block_match.group(1)
-        for line in block.splitlines():
+    def _parse_lines(lines: list[str]) -> None:
+        nonlocal confidence, description, display_name, required_signals
+        for line in lines:
             line = line.strip()
             if line.startswith("name:"):
                 display_name = line.split(":", 1)[1].strip()
@@ -83,6 +89,23 @@ def parse_pattern_metadata(
                     s.strip() for s in signals_str.split(",") if s.strip()
                 ]
 
+    # Try block comment /* ... */ first
+    block_match = re.search(r"/\*(.*?)\*/", query_text, re.DOTALL)
+    if block_match:
+        _parse_lines(block_match.group(1).splitlines())
+    else:
+        # Fall back to // line comments at the top of the file
+        line_comment_lines = []
+        for line in query_text.splitlines():
+            stripped = line.strip()
+            if stripped.startswith("//"):
+                # Strip leading "// " or "//"
+                line_comment_lines.append(stripped.lstrip("/").strip())
+            elif stripped:
+                # First non-comment, non-blank line ends the header block
+                break
+        _parse_lines(line_comment_lines)
+
     return {
         "pattern_id": pattern_id,
         "pattern_name": display_name,
@@ -93,10 +116,30 @@ def parse_pattern_metadata(
 
 
 def _extract_query_body(query_text: str) -> str:
-    """Strip block comments from EQL query, return just the query body."""
+    """
+    Strip comment headers from EQL query and return just the executable body.
+
+    Handles two comment styles used in .eql files:
+    - Block comments: /* ... */
+    - Line comments:  // key: value  (leading comment lines only)
+
+    EQL itself supports // comments, but stripping them ensures a clean query
+    string is sent to Elasticsearch regardless of ES version tolerance.
+    """
     # Remove block comments
     cleaned = re.sub(r"/\*.*?\*/", "", query_text, flags=re.DOTALL)
-    return cleaned.strip()
+    # Remove leading // comment lines (header metadata)
+    lines = cleaned.splitlines()
+    body_lines = []
+    in_header = True
+    for line in lines:
+        stripped = line.strip()
+        if in_header and (stripped.startswith("//") or stripped == ""):
+            continue  # skip header comment lines and blank separator lines
+        else:
+            in_header = False
+            body_lines.append(line)
+    return "\n".join(body_lines).strip()
 
 
 def run_pattern(

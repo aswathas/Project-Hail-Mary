@@ -7,7 +7,9 @@
 FROM forensics
 | WHERE layer == "derived" AND derived_type == "event_sequence"
 | WHERE event_name == "Withdraw" OR event_name == "Deposit"
-| STATS min_withdraw_idx = MIN(CASE(event_name == "Withdraw", log_index, NULL)), max_deposit_idx = MAX(CASE(event_name == "Deposit", log_index, NULL)) BY tx_hash, block_number, contract_address
+| EVAL withdraw_idx = CASE(event_name == "Withdraw", log_index, null)
+| EVAL deposit_idx = CASE(event_name == "Deposit", log_index, null)
+| STATS min_withdraw_idx = MIN(withdraw_idx), max_deposit_idx = MAX(deposit_idx) BY tx_hash, block_number, contract_address
 | WHERE min_withdraw_idx IS NOT NULL AND max_deposit_idx IS NOT NULL AND min_withdraw_idx < max_deposit_idx
 | SORT block_number DESC
 | LIMIT 50

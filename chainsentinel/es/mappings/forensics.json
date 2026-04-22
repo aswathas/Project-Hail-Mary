@@ -86,10 +86,11 @@
       "bytecode_size_bytes": { "type": "integer" },
       "tx_index": { "type": "integer" },
       "tx_type": { "type": "keyword" },
+      "events_count": { "type": "integer" },
       "is_deployment": { "type": "boolean" },
       "is_first_interaction": { "type": "boolean" },
       "is_contract_call": { "type": "boolean" },
-      "status": { "type": "keyword" },
+      "status": { "type": "integer" },
       "is_spike": { "type": "boolean" },
 
       "event_name": { "type": "keyword" },
@@ -202,7 +203,12 @@
       "token_out": { "type": "keyword" },
       "attacker_type": { "type": "keyword" },
       "fund_trail_hops": { "type": "integer" },
-      "delta_amount": { "type": "double" }
+      "delta_amount": { "type": "double" },
+
+      "is_donation": { "type": "boolean" },
+      "donation_value_eth": { "type": "double" },
+      "price_value": { "type": "double" },
+      "has_matching_event": { "type": "boolean" }
     }
   }
 }

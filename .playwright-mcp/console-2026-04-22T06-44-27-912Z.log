@@ -1,0 +1,1 @@
+[ 1789820ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_RESET @ http://localhost:5601/api/saved_objects_tagging/tags:0

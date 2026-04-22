@@ -11,7 +11,7 @@ _log = logging.getLogger("chainsentinel.collector")
 
 
 async def _fetch_trace(rpc_url: str, tx_hash: str) -> dict | None:
-    """Fetch debug_traceTransaction via direct HTTP call (bypasses web3 async issues)."""
+    """Fetch debug_traceTransaction with callTracer (call tree)."""
     payload = {
         "jsonrpc": "2.0",
         "method": "debug_traceTransaction",
@@ -25,6 +25,46 @@ async def _fetch_trace(rpc_url: str, tx_hash: str) -> dict | None:
             return data.get("result")
     except Exception:
         return None
+
+
+async def _fetch_state_diffs(rpc_url: str, tx_hash: str) -> dict | None:
+    """Fetch debug_traceTransaction with prestateTracer (storage slot diffs)."""
+    payload = {
+        "jsonrpc": "2.0",
+        "method": "debug_traceTransaction",
+        "params": [tx_hash, {"tracer": "prestateTracer", "tracerConfig": {"diffMode": True}}],
+        "id": 1,
+    }
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            resp = await client.post(rpc_url, json=payload)
+            data = resp.json()
+            result = data.get("result")
+            # diffMode returns {"pre": {...}, "post": {...}} — convert to slot diff format
+            if isinstance(result, dict) and "pre" in result and "post" in result:
+                return _build_slot_diffs(result["pre"], result["post"])
+            return result
+    except Exception:
+        return None
+
+
+def _build_slot_diffs(pre: dict, post: dict) -> dict:
+    """Convert prestateTracer diffMode output to {address: {storage: {slot: {from, to}}}}."""
+    diffs = {}
+    all_addrs = set(pre.keys()) | set(post.keys())
+    for addr in all_addrs:
+        pre_storage = pre.get(addr, {}).get("storage", {})
+        post_storage = post.get(addr, {}).get("storage", {})
+        all_slots = set(pre_storage.keys()) | set(post_storage.keys())
+        slot_diffs = {}
+        for slot in all_slots:
+            before = pre_storage.get(slot, "0x" + "0" * 64)
+            after = post_storage.get(slot, "0x" + "0" * 64)
+            if before != after:
+                slot_diffs[slot] = {"from": before, "to": after}
+        if slot_diffs:
+            diffs[addr] = {"storage": slot_diffs}
+    return diffs if diffs else None
 
 
 def _hex_to_int(val):
@@ -85,11 +125,14 @@ async def collect_transaction(w3, tx_hash: str, include_trace: bool = False, rpc
             else None,
         "logs": logs,
         "trace": None,
+        "state_diffs": None,
     }
 
     if include_trace:
         trace = await _fetch_trace(rpc_url, tx_hash)
         doc["trace"] = dict(trace) if trace else None
+        state_diffs = await _fetch_state_diffs(rpc_url, tx_hash)
+        doc["state_diffs"] = state_diffs
 
     return doc
 
@@ -147,11 +190,14 @@ async def collect_block_range(
                 ) if receipt.get("contractAddress", receipt.get("contract_address")) else None,
                 "logs": logs,
                 "trace": None,
+                "state_diffs": None,
             }
 
             if include_traces:
                 trace = await _fetch_trace(rpc_url, tx_hash)
                 doc["trace"] = dict(trace) if trace else None
+                state_diffs = await _fetch_state_diffs(rpc_url, tx_hash)
+                doc["state_diffs"] = state_diffs
                 _log.info("Trace fetch %s -> %s", tx_hash[:12], "ok" if trace else "none")
 
             results.append(doc)

@@ -1,0 +1,121 @@
+services:
+  # ── Infrastructure ──────────────────────────────────────────────────────────
+  elasticsearch:
+    image: elasticsearch:8.12.0
+    container_name: chainsentinel-es
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms1g -Xmx1g
+      - cluster.routing.allocation.disk.threshold_enabled=false
+    ports:
+      - "9200:9200"
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:9200/_cluster/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+
+  kibana:
+    image: kibana:8.12.0
+    container_name: chainsentinel-kibana
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+      - TELEMETRY_OPTIN=false
+    ports:
+      - "5601:5601"
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:5601/api/status"]
+      interval: 15s
+      timeout: 10s
+      retries: 30
+
+  # ── Local EVM node ───────────────────────────────────────────────────────────
+  anvil:
+    image: ghcr.io/foundry-rs/foundry:latest
+    container_name: chainsentinel-anvil
+    entrypoint: anvil
+    command:
+      - "--host"
+      - "0.0.0.0"
+      - "--port"
+      - "8545"
+      - "--chain-id"
+      - "31337"
+      - "--accounts"
+      - "10"
+      - "--balance"
+      - "10000"
+    ports:
+      - "8545:8545"
+    healthcheck:
+      test: ["CMD", "sh", "-c",
+             "wget -q -O- --post-data='{\"jsonrpc\":\"2.0\",\"method\":\"eth_blockNumber\",\"params\":[],\"id\":1}' --header='Content-Type: application/json' http://localhost:8545 | grep -q result"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  # ── Foundry simulation — demo-500 scenario ────────────────────────────────────
+  simulator:
+    image: ghcr.io/foundry-rs/foundry:latest
+    container_name: chainsentinel-simulator
+    working_dir: /sim
+    volumes:
+      - ./simulations:/sim
+    entrypoint: ["sh", "-c"]
+    command:
+      - |
+        cd /sim && forge script scenarios/demo-500/script/RunAll.s.sol \
+          --rpc-url http://anvil:8545 \
+          --broadcast \
+          --private-key 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80 \
+          -vv
+    depends_on:
+      anvil:
+        condition: service_healthy
+
+  # ── ChainSentinel forensics pipeline ─────────────────────────────────────────
+  pipeline:
+    build:
+      context: ./chainsentinel
+      dockerfile: Dockerfile
+    container_name: chainsentinel-pipeline
+    environment:
+      - ES_URL=http://elasticsearch:9200
+      - RPC_URL=http://anvil:8545
+      - INVESTIGATION_ID=INV-DEMO-500
+    volumes:
+      - ./chainsentinel:/app
+      - ./simulations/scenarios/demo-500/client:/app/pipeline/abi_registry/cases/INV-DEMO-500
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+      simulator:
+        condition: service_completed_successfully
+
+  # ── Kibana dashboard setup (runs after pipeline finishes) ─────────────────────
+  kibana-setup:
+    build:
+      context: ./chainsentinel
+      dockerfile: Dockerfile
+    container_name: chainsentinel-kibana-setup
+    environment:
+      - KIBANA_URL=http://kibana:5601
+    entrypoint: ["sh", "-c"]
+    command:
+      - |
+        python kibana_setup.py
+    depends_on:
+      kibana:
+        condition: service_healthy
+      pipeline:
+        condition: service_completed_successfully
+
+volumes:
+  esdata:
+    driver: local

@@ -1,0 +1,36 @@
+{
+  "investigation_name": "Demo-500 Multi-Attack",
+  "chain_id": 31337,
+  "rpc_url": "http://127.0.0.1:8545",
+  "contracts": [
+    {
+      "address": "FILL_AFTER_DEPLOY",
+      "name": "VulnerableVault",
+      "role": "victim",
+      "abi_file": "abis/VulnerableVault.json"
+    },
+    {
+      "address": "FILL_AFTER_DEPLOY",
+      "name": "SimpleDEX",
+      "role": "victim",
+      "abi_file": "abis/SimpleDEX.json"
+    },
+    {
+      "address": "FILL_AFTER_DEPLOY",
+      "name": "MockERC20_ALPHA",
+      "role": "asset",
+      "abi_file": "abis/MockERC20.json"
+    },
+    {
+      "address": "FILL_AFTER_DEPLOY",
+      "name": "MockERC20_BETA",
+      "role": "asset",
+      "abi_file": "abis/MockERC20.json"
+    }
+  ],
+  "block_range": {
+    "from": 1,
+    "to": 600
+  },
+  "notes": "Large-scale simulation: ~500 transactions with two embedded attacks. Attack 1: reentrancy drain on VulnerableVault (ETH). Attack 2: MEV sandwich on SimpleDEX token pool. Analyse full block range to detect both AP-005 and AP-014."
+}

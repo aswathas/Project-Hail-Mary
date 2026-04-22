@@ -71,6 +71,7 @@ async def _run_new_derived_builders(
             "normalized_tx": normalized_tx,
             "decoded_events": decoded_events,
             "trace": collector_doc.get("trace"),
+            "state_diffs": collector_doc.get("state_diffs"),
             "tx_hash": normalized_tx.get("tx_hash", ""),
             "block_number": normalized_tx.get("block_number", 0),
             "block_datetime": normalized_tx.get("block_datetime", ""),

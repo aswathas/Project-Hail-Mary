@@ -1,0 +1,584 @@
+- generic [ref=e1]:
+  - generic [ref=e14]:
+    - status [ref=e257]: ChainSentinel — Forensics Overview - Dashboards - Elastic
+    - button "Skip to main content" [ref=e17] [cursor=pointer]:
+      - generic [ref=e19]: Skip to main content
+    - banner:
+      - generic:
+        - generic [ref=e20]:
+          - link "Elastic home" [ref=e23] [cursor=pointer]:
+            - /url: /app/home
+            - img "Elastic Logo" [ref=e573]
+            - img [ref=e32]
+          - generic [ref=e40]:
+            - generic [ref=e41]:
+              - generic [ref=e42]:
+                - generic:
+                  - generic:
+                    - img
+                - searchbox "Find apps, content, and more." [ref=e43]
+              - 'generic "Keyboard shortcut: Control + /" [ref=e44]': ^/
+            - paragraph [ref=e45]: Use the Up and Down arrow keys to move focus over options. Press Enter to select. Press Escape to collapse options.
+          - generic [ref=e46]:
+            - button "Help menu" [ref=e50] [cursor=pointer]:
+              - img [ref=e54]
+            - button "Newsfeed menu - unread items available" [ref=e59] [cursor=pointer]:
+              - generic [ref=e61]:
+                - img [ref=e63]
+                - img [ref=e65]
+        - generic [ref=e67]:
+          - generic [ref=e68]:
+            - button "Toggle primary navigation" [ref=e70] [cursor=pointer]:
+              - img [ref=e74]
+            - button "Spaces navigation" [ref=e80] [cursor=pointer]:
+              - img "Default" [ref=e84]:
+                - generic [ref=e85]: D
+          - generic [ref=e86]:
+            - navigation "Breadcrumbs" [ref=e87]:
+              - list [ref=e88]:
+                - listitem [ref=e89]:
+                  - button "Dashboards" [ref=e259] [cursor=pointer]
+                - listitem [ref=e260]:
+                  - generic "ChainSentinel — Forensics Overview" [ref=e261]
+            - button "Search session complete" [ref=e581] [cursor=pointer]:
+              - img
+          - navigation "App menu" [ref=e272]:
+            - generic [ref=e273]:
+              - button "Full screen" [ref=e274] [cursor=pointer]:
+                - generic [ref=e276]: Full screen
+              - button "Share" [ref=e277] [cursor=pointer]:
+                - generic [ref=e279]: Share
+              - button "Clone" [ref=e280] [cursor=pointer]:
+                - generic [ref=e282]: Clone
+              - button "Reset" [disabled] [ref=e283]:
+                - generic [ref=e285]: Reset
+              - button "Edit" [ref=e286] [cursor=pointer]:
+                - generic [ref=e287]:
+                  - img [ref=e288]
+                  - generic [ref=e290]: Edit
+    - generic [ref=e94]:
+      - paragraph [ref=e95]: Help us improve the Elastic Stack
+      - generic [ref=e97]:
+        - strong [ref=e98]: Usage collection is disabled.
+        - text: This allows us to learn what our users are most interested in, so we can improve our products and services. Refer to our
+        - link "Privacy Statement External link (opens in a new tab or window)" [ref=e99] [cursor=pointer]:
+          - /url: https://www.elastic.co/legal/product-privacy-statement
+          - text: Privacy Statement
+          - img "External link" [ref=e100]
+          - generic [ref=e102]: (opens in a new tab or window)
+        - text: .
+        - link "Enable usage collection." [ref=e103] [cursor=pointer]:
+          - /url: /app/management/kibana/settings
+        - button "Dismiss" [ref=e105] [cursor=pointer]:
+          - generic [ref=e106]: Dismiss
+    - generic [ref=e108]:
+      - generic [ref=e291]:
+        - heading "Dashboards - ChainSentinel — Forensics Overview" [level=1] [ref=e292]
+        - generic [ref=e294]:
+          - generic [ref=e296]:
+            - generic [ref=e298]:
+              - button "Query menu" [ref=e303] [cursor=pointer]:
+                - img
+              - button "Add filter" [ref=e310] [cursor=pointer]:
+                - img
+            - combobox "Search and filter the dashboard page" [ref=e313]:
+              - search [ref=e314]:
+                - textbox "Start typing to search and filter the dashboard page" [ref=e317]:
+                  - /placeholder: Filter your data using KQL syntax
+                - generic:
+                  - img
+          - generic [ref=e322]:
+            - generic [ref=e325]:
+              - button "Date quick select" [ref=e328] [cursor=pointer]:
+                - generic [ref=e329]:
+                  - img [ref=e331]
+                  - img [ref=e333]
+              - button "Last 15 minutes" [ref=e336] [cursor=pointer]
+            - button "Refresh query" [ref=e339] [cursor=pointer]:
+              - generic [ref=e340]:
+                - img [ref=e341]
+                - generic [ref=e343]: Refresh
+        - separator [ref=e344]
+      - generic [ref=e348]:
+        - 'figure "Dashboard panel: Total Forensic Docs" [ref=e350]':
+          - generic [ref=e351]:
+            - 'heading "Dashboard panel: Total Forensic Docs Total Forensic Docs" [level=2] [ref=e352]':
+              - generic [ref=e353]: "Dashboard panel: Total Forensic Docs"
+              - generic [ref=e355]: Total Forensic Docs
+            - button "Panel options for Total Forensic Docs" [ref=e358] [cursor=pointer]:
+              - img
+          - list [ref=e595]:
+            - listitem [ref=e596]:
+              - figure "Count of records" [ref=e597]:
+                - generic [ref=e598]:
+                  - heading "Count of records" [level=2] [ref=e600]:
+                    - generic "Count of records" [ref=e601]
+                  - generic:
+                    - paragraph
+                  - paragraph [ref=e604]: "997"
+        - 'figure "Dashboard panel: Signals Detected" [ref=e366]':
+          - generic [ref=e367]:
+            - 'heading "Dashboard panel: Signals Detected Signals Detected" [level=2] [ref=e368]':
+              - generic [ref=e369]: "Dashboard panel: Signals Detected"
+              - generic [ref=e371]: Signals Detected
+            - button "Panel options for Signals Detected" [ref=e374] [cursor=pointer]:
+              - img
+          - list [ref=e618]:
+            - listitem [ref=e619]:
+              - figure "Count of records" [ref=e620] [cursor=pointer]:
+                - generic [ref=e621]:
+                  - heading "Count of records" [level=2] [ref=e623]:
+                    - button "Count of records" [ref=e624]:
+                      - generic "Count of records" [ref=e625]
+                  - generic:
+                    - paragraph
+                  - paragraph [ref=e628]: "121"
+        - 'figure "Dashboard panel: Derived Security Events" [ref=e382]':
+          - generic [ref=e383]:
+            - 'heading "Dashboard panel: Derived Security Events Derived Security Events" [level=2] [ref=e384]':
+              - generic [ref=e385]: "Dashboard panel: Derived Security Events"
+              - generic [ref=e387]: Derived Security Events
+            - button "Panel options for Derived Security Events" [ref=e390] [cursor=pointer]:
+              - img
+          - list [ref=e642]:
+            - listitem [ref=e643]:
+              - figure "Count of records" [ref=e644] [cursor=pointer]:
+                - generic [ref=e645]:
+                  - heading "Count of records" [level=2] [ref=e647]:
+                    - button "Count of records" [ref=e648]:
+                      - generic "Count of records" [ref=e649]
+                  - generic:
+                    - paragraph
+                  - paragraph [ref=e652]: "875"
+        - 'figure "Dashboard panel: Attack Alerts" [ref=e398]':
+          - generic [ref=e399]:
+            - 'heading "Dashboard panel: Attack Alerts Attack Alerts" [level=2] [ref=e400]':
+              - generic [ref=e401]: "Dashboard panel: Attack Alerts"
+              - generic [ref=e403]: Attack Alerts
+            - button "Panel options for Attack Alerts" [ref=e406] [cursor=pointer]:
+              - img
+          - list [ref=e666]:
+            - listitem [ref=e667]:
+              - figure "Count of records" [ref=e668] [cursor=pointer]:
+                - generic [ref=e669]:
+                  - heading "Count of records" [level=2] [ref=e671]:
+                    - button "Count of records" [ref=e672]:
+                      - generic "Count of records" [ref=e673]
+                  - generic:
+                    - paragraph
+                  - paragraph [ref=e676]: "1"
+        - 'figure "Dashboard panel: Raw Transactions" [ref=e414]':
+          - generic [ref=e415]:
+            - 'heading "Dashboard panel: Raw Transactions Raw Transactions" [level=2] [ref=e416]':
+              - generic [ref=e417]: "Dashboard panel: Raw Transactions"
+              - generic [ref=e419]: Raw Transactions
+            - button "Panel options for Raw Transactions" [ref=e422] [cursor=pointer]:
+              - img
+          - list [ref=e690]:
+            - listitem [ref=e691]:
+              - figure "Count of records" [ref=e692]:
+                - generic [ref=e693]:
+                  - heading "Count of records" [level=2] [ref=e695]:
+                    - generic "Count of records" [ref=e696]
+                  - generic:
+                    - paragraph
+                  - paragraph [ref=e699]: "54"
+        - 'figure "Dashboard panel: Raw Logs" [ref=e430]':
+          - generic [ref=e431]:
+            - 'heading "Dashboard panel: Raw Logs Raw Logs" [level=2] [ref=e432]':
+              - generic [ref=e433]: "Dashboard panel: Raw Logs"
+              - generic [ref=e435]: Raw Logs
+            - button "Panel options for Raw Logs" [ref=e438] [cursor=pointer]:
+              - img
+          - list [ref=e713]:
+            - listitem [ref=e714]:
+              - figure "Count of records" [ref=e715]:
+                - generic [ref=e716]:
+                  - heading "Count of records" [level=2] [ref=e718]:
+                    - generic "Count of records" [ref=e719]
+                  - generic:
+                    - paragraph
+                  - paragraph [ref=e722]: "54"
+        - 'figure "Dashboard panel: Decoded Events" [ref=e446]':
+          - generic [ref=e447]:
+            - 'heading "Dashboard panel: Decoded Events Decoded Events" [level=2] [ref=e448]':
+              - generic [ref=e449]: "Dashboard panel: Decoded Events"
+              - generic [ref=e451]: Decoded Events
+            - button "Panel options for Decoded Events" [ref=e454] [cursor=pointer]:
+              - img
+          - list [ref=e736]:
+            - listitem [ref=e737]:
+              - figure "Count of records" [ref=e738] [cursor=pointer]:
+                - generic [ref=e739]:
+                  - heading "Count of records" [level=2] [ref=e741]:
+                    - button "Count of records" [ref=e742]:
+                      - generic "Count of records" [ref=e743]
+                  - generic:
+                    - paragraph
+                  - paragraph [ref=e746]: "0"
+        - 'figure "Dashboard panel: Attacker Profiles" [ref=e462]':
+          - generic [ref=e463]:
+            - 'heading "Dashboard panel: Attacker Profiles Attacker Profiles" [level=2] [ref=e464]':
+              - generic [ref=e465]: "Dashboard panel: Attacker Profiles"
+              - generic [ref=e467]: Attacker Profiles
+            - button "Panel options for Attacker Profiles" [ref=e470] [cursor=pointer]:
+              - img
+          - list [ref=e760]:
+            - listitem [ref=e761]:
+              - figure "Count of records" [ref=e762] [cursor=pointer]:
+                - generic [ref=e763]:
+                  - heading "Count of records" [level=2] [ref=e765]:
+                    - button "Count of records" [ref=e766]:
+                      - generic "Count of records" [ref=e767]
+                  - generic:
+                    - paragraph
+                  - paragraph [ref=e770]: "0"
+        - 'figure "Dashboard panel: Signals by Name" [ref=e478]':
+          - generic [ref=e479]:
+            - 'heading "Dashboard panel: Signals by Name Signals by Name" [level=2] [ref=e480]':
+              - generic [ref=e481]: "Dashboard panel: Signals by Name"
+              - generic [ref=e483]: Signals by Name
+            - button "Panel options for Signals by Name" [ref=e486] [cursor=pointer]:
+              - img
+          - grid "Signals by Name" [ref=e778]:
+            - generic [ref=e780]:
+              - row "Top 20 values of signal_name Count of records" [ref=e781]:
+                - columnheader "Top 20 values of signal_name" [ref=e782]:
+                  - button "Top 20 values of signal_name" [ref=e786] [cursor=pointer]:
+                    - generic "Top 20 values of signal_name" [ref=e787]:
+                      - generic [ref=e788]: Top 20 values of signal_name
+                    - img [ref=e789]
+                - columnheader "Count of records" [ref=e791]:
+                  - button "Count of records" [ref=e795] [cursor=pointer]:
+                    - generic "Count of records" [ref=e796]:
+                      - generic [ref=e797]: Count of records
+                    - img [ref=e798]
+              - row "net_negative_contract_balance 41" [ref=e800]:
+                - gridcell "net_negative_contract_balance" [ref=e801]:
+                  - generic [ref=e804]: net_negative_contract_balance
+                - gridcell "41" [ref=e805]:
+                  - generic [ref=e808]: "41"
+              - row "storage_update_delay 37" [ref=e809]:
+                - gridcell "storage_update_delay" [ref=e810]:
+                  - generic [ref=e813]: storage_update_delay
+                - gridcell "37" [ref=e814]:
+                  - generic [ref=e817]: "37"
+              - row "new_address_first_interaction 20" [ref=e818]:
+                - gridcell "new_address_first_interaction" [ref=e819]:
+                  - generic [ref=e822]: new_address_first_interaction
+                - gridcell "20" [ref=e823]:
+                  - generic [ref=e826]: "20"
+              - row "large_value_inflow_spike 8" [ref=e827]:
+                - gridcell "large_value_inflow_spike" [ref=e828]:
+                  - generic [ref=e831]: large_value_inflow_spike
+                - gridcell "8" [ref=e832]:
+                  - generic [ref=e835]: "8"
+              - row "address_funded_before_attack 6" [ref=e836]:
+                - gridcell "address_funded_before_attack" [ref=e837]:
+                  - generic [ref=e840]: address_funded_before_attack
+                - gridcell "6" [ref=e841]:
+                  - generic [ref=e844]: "6"
+              - row "donation_balance_inflation 4" [ref=e845]:
+                - gridcell "donation_balance_inflation" [ref=e846]:
+                  - generic [ref=e849]: donation_balance_inflation
+                - gridcell "4" [ref=e850]:
+                  - generic [ref=e853]: "4"
+              - row "cross_function_reentry 1" [ref=e854]:
+                - gridcell "cross_function_reentry" [ref=e855]:
+                  - generic [ref=e858]: cross_function_reentry
+                - gridcell "1" [ref=e859]:
+                  - generic [ref=e862]: "1"
+              - row "drain_ratio_exceeded 1" [ref=e863]:
+                - gridcell "drain_ratio_exceeded" [ref=e864]:
+                  - generic [ref=e867]: drain_ratio_exceeded
+                - gridcell "1" [ref=e868]:
+                  - generic [ref=e871]: "1"
+              - row "recursive_depth_pattern 1" [ref=e872]:
+                - gridcell "recursive_depth_pattern" [ref=e873]:
+                  - generic [ref=e876]: recursive_depth_pattern
+                - gridcell "1" [ref=e877]:
+                  - generic [ref=e880]: "1"
+              - row "reentrancy_guard_bypass 1" [ref=e881]:
+                - gridcell "reentrancy_guard_bypass" [ref=e882]:
+                  - generic [ref=e885]: reentrancy_guard_bypass
+                - gridcell "1" [ref=e886]:
+                  - generic [ref=e889]: "1"
+              - row "value_drain_per_depth 1" [ref=e890]:
+                - gridcell "value_drain_per_depth" [ref=e891]:
+                  - generic [ref=e894]: value_drain_per_depth
+                - gridcell "1" [ref=e895]:
+                  - generic [ref=e898]: "1"
+        - 'figure "Dashboard panel: Signal Families" [ref=e494]':
+          - generic [ref=e495]:
+            - 'heading "Dashboard panel: Signal Families Signal Families" [level=2] [ref=e496]':
+              - generic [ref=e497]: "Dashboard panel: Signal Families"
+              - generic [ref=e499]: Signal Families
+            - button "Panel options for Signal Families" [ref=e502] [cursor=pointer]:
+              - img
+          - grid "Signal Families" [ref=e906]:
+            - generic [ref=e908]:
+              - row "Top 20 values of signal_family Count of records" [ref=e909]:
+                - columnheader "Top 20 values of signal_family" [ref=e910]:
+                  - button "Top 20 values of signal_family" [ref=e914] [cursor=pointer]:
+                    - generic "Top 20 values of signal_family" [ref=e915]:
+                      - generic [ref=e916]: Top 20 values of signal_family
+                    - img [ref=e917]
+                - columnheader "Count of records" [ref=e919]:
+                  - button "Count of records" [ref=e923] [cursor=pointer]:
+                    - generic "Count of records" [ref=e924]:
+                      - generic [ref=e925]: Count of records
+                    - img [ref=e926]
+              - row "value 50" [ref=e928]:
+                - gridcell "value" [ref=e929]:
+                  - generic [ref=e932]: value
+                - gridcell "50" [ref=e933]:
+                  - generic [ref=e936]: "50"
+              - row "structural 40" [ref=e937]:
+                - gridcell "structural" [ref=e938]:
+                  - generic [ref=e941]: structural
+                - gridcell "40" [ref=e942]:
+                  - generic [ref=e945]: "40"
+              - row "behavioural 26" [ref=e946]:
+                - gridcell "behavioural" [ref=e947]:
+                  - generic [ref=e950]: behavioural
+                - gridcell "26" [ref=e951]:
+                  - generic [ref=e954]: "26"
+              - row "oracle 4" [ref=e955]:
+                - gridcell "oracle" [ref=e956]:
+                  - generic [ref=e959]: oracle
+                - gridcell "4" [ref=e960]:
+                  - generic [ref=e963]: "4"
+              - row "additional 1" [ref=e964]:
+                - gridcell "additional" [ref=e965]:
+                  - generic [ref=e968]: additional
+                - gridcell "1" [ref=e969]:
+                  - generic [ref=e972]: "1"
+        - 'figure "Dashboard panel: Derived Event Types" [ref=e510]':
+          - generic [ref=e511]:
+            - 'heading "Dashboard panel: Derived Event Types Derived Event Types" [level=2] [ref=e512]':
+              - generic [ref=e513]: "Dashboard panel: Derived Event Types"
+              - generic [ref=e515]: Derived Event Types
+            - button "Panel options for Derived Event Types" [ref=e518] [cursor=pointer]:
+              - img
+          - grid "Derived Event Types" [ref=e980]:
+            - generic [ref=e982]:
+              - row "Top 20 values of derived_type Count of records" [ref=e983]:
+                - columnheader "Top 20 values of derived_type" [ref=e984]:
+                  - button "Top 20 values of derived_type" [ref=e988] [cursor=pointer]:
+                    - generic "Top 20 values of derived_type" [ref=e989]:
+                      - generic [ref=e990]: Top 20 values of derived_type
+                    - img [ref=e991]
+                - columnheader "Count of records" [ref=e993]:
+                  - button "Count of records" [ref=e997] [cursor=pointer]:
+                    - generic "Count of records" [ref=e998]:
+                      - generic [ref=e999]: Count of records
+                    - img [ref=e1000]
+              - row "value_flow_intra_tx 83" [ref=e1002]:
+                - gridcell "value_flow_intra_tx" [ref=e1003]:
+                  - generic [ref=e1006]: value_flow_intra_tx
+                - gridcell "83" [ref=e1007]:
+                  - generic [ref=e1010]: "83"
+              - row "state_delta_per_tx 76" [ref=e1011]:
+                - gridcell "state_delta_per_tx" [ref=e1012]:
+                  - generic [ref=e1015]: state_delta_per_tx
+                - gridcell "76" [ref=e1016]:
+                  - generic [ref=e1019]: "76"
+              - row "execution_edge 75" [ref=e1020]:
+                - gridcell "execution_edge" [ref=e1021]:
+                  - generic [ref=e1024]: execution_edge
+                - gridcell "75" [ref=e1025]:
+                  - generic [ref=e1028]: "75"
+              - row "execution_structure 75" [ref=e1029]:
+                - gridcell "execution_structure" [ref=e1030]:
+                  - generic [ref=e1033]: execution_structure
+                - gridcell "75" [ref=e1034]:
+                  - generic [ref=e1037]: "75"
+              - row "value_flow_graph 52" [ref=e1038]:
+                - gridcell "value_flow_graph" [ref=e1039]:
+                  - generic [ref=e1042]: value_flow_graph
+                - gridcell "52" [ref=e1043]:
+                  - generic [ref=e1046]: "52"
+              - row "address_activity_summary 43" [ref=e1047]:
+                - gridcell "address_activity_summary" [ref=e1048]:
+                  - generic [ref=e1051]: address_activity_summary
+                - gridcell "43" [ref=e1052]:
+                  - generic [ref=e1055]: "43"
+              - row "address_interaction_graph 43" [ref=e1056]:
+                - gridcell "address_interaction_graph" [ref=e1057]:
+                  - generic [ref=e1060]: address_interaction_graph
+                - gridcell "43" [ref=e1061]:
+                  - generic [ref=e1064]: "43"
+              - row "block_address_activity 43" [ref=e1065]:
+                - gridcell "block_address_activity" [ref=e1066]:
+                  - generic [ref=e1069]: block_address_activity
+                - gridcell "43" [ref=e1070]:
+                  - generic [ref=e1073]: "43"
+              - row "gas_analysis 43" [ref=e1074]:
+                - gridcell "gas_analysis" [ref=e1075]:
+                  - generic [ref=e1078]: gas_analysis
+                - gridcell "43" [ref=e1079]:
+                  - generic [ref=e1082]: "43"
+              - row "nonce_tracking 43" [ref=e1083]:
+                - gridcell "nonce_tracking" [ref=e1084]:
+                  - generic [ref=e1087]: nonce_tracking
+                - gridcell "43" [ref=e1088]:
+                  - generic [ref=e1091]: "43"
+              - row "transaction_timeline 43" [ref=e1092]:
+                - gridcell "transaction_timeline" [ref=e1093]:
+                  - generic [ref=e1096]: transaction_timeline
+                - gridcell "43" [ref=e1097]:
+                  - generic [ref=e1100]: "43"
+        - 'figure "Dashboard panel: Attack Alerts (Pattern ID)" [ref=e526]':
+          - generic [ref=e527]:
+            - 'heading "Dashboard panel: Attack Alerts (Pattern ID) Attack Alerts (Pattern ID)" [level=2] [ref=e528]':
+              - generic [ref=e529]: "Dashboard panel: Attack Alerts (Pattern ID)"
+              - generic [ref=e531]: Attack Alerts (Pattern ID)
+            - button "Panel options for Attack Alerts (Pattern ID)" [ref=e534] [cursor=pointer]:
+              - img
+          - grid "Attack Alerts (Pattern ID)" [ref=e1108]:
+            - generic [ref=e1110]:
+              - row "Top 20 values of pattern_id Count of records" [ref=e1111]:
+                - columnheader "Top 20 values of pattern_id" [ref=e1112]:
+                  - button "Top 20 values of pattern_id" [ref=e1116] [cursor=pointer]:
+                    - generic "Top 20 values of pattern_id" [ref=e1117]:
+                      - generic [ref=e1118]: Top 20 values of pattern_id
+                    - img [ref=e1119]
+                - columnheader "Count of records" [ref=e1121]:
+                  - button "Count of records" [ref=e1125] [cursor=pointer]:
+                    - generic "Count of records" [ref=e1126]:
+                      - generic [ref=e1127]: Count of records
+                    - img [ref=e1128]
+              - row "AP-001 1" [ref=e1130]:
+                - gridcell "AP-001" [ref=e1131]:
+                  - generic [ref=e1134]: AP-001
+                - gridcell "1" [ref=e1135]:
+                  - generic [ref=e1138]: "1"
+        - 'figure "Dashboard panel: Top Attacker Wallets (from_address)" [ref=e542]':
+          - generic [ref=e543]:
+            - 'heading "Dashboard panel: Top Attacker Wallets (from_address) Top Attacker Wallets (from_address)" [level=2] [ref=e544]':
+              - generic [ref=e545]: "Dashboard panel: Top Attacker Wallets (from_address)"
+              - generic [ref=e547]: Top Attacker Wallets (from_address)
+            - button "Panel options for Top Attacker Wallets (from_address)" [ref=e550] [cursor=pointer]:
+              - img
+          - grid "Top Attacker Wallets (from_address)" [ref=e1146]:
+            - generic [ref=e1148]:
+              - row "Top 20 values of from_address Count of records" [ref=e1149]:
+                - columnheader "Top 20 values of from_address" [ref=e1150]:
+                  - button "Top 20 values of from_address" [ref=e1154] [cursor=pointer]:
+                    - generic "Top 20 values of from_address" [ref=e1155]:
+                      - generic [ref=e1156]: Top 20 values of from_address
+                    - img [ref=e1157]
+                - columnheader "Count of records" [ref=e1159]:
+                  - button "Count of records" [ref=e1163] [cursor=pointer]:
+                    - generic "Count of records" [ref=e1164]:
+                      - generic [ref=e1165]: Count of records
+                    - img [ref=e1166]
+              - row "0x976ea74026e726554db657fa54763abd0c3a0aa9 8" [ref=e1168]:
+                - gridcell "0x976ea74026e726554db657fa54763abd0c3a0aa9" [ref=e1169]:
+                  - generic [ref=e1172]: "0x976ea74026e726554db657fa54763abd0c3a0aa9"
+                - gridcell "8" [ref=e1173]:
+                  - generic [ref=e1176]: "8"
+              - row "0x15d34aaf54267db7d7c367839aaf71a00a2c6a65 5" [ref=e1177]:
+                - gridcell "0x15d34aaf54267db7d7c367839aaf71a00a2c6a65" [ref=e1178]:
+                  - generic [ref=e1181]: "0x15d34aaf54267db7d7c367839aaf71a00a2c6a65"
+                - gridcell "5" [ref=e1182]:
+                  - generic [ref=e1185]: "5"
+              - row "0x90f79bf6eb2c4f870365e785982e1f101e93b906 5" [ref=e1186]:
+                - gridcell "0x90f79bf6eb2c4f870365e785982e1f101e93b906" [ref=e1187]:
+                  - generic [ref=e1190]: "0x90f79bf6eb2c4f870365e785982e1f101e93b906"
+                - gridcell "5" [ref=e1191]:
+                  - generic [ref=e1194]: "5"
+              - row "0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc 4" [ref=e1195]:
+                - gridcell "0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc" [ref=e1196]:
+                  - generic [ref=e1199]: "0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc"
+                - gridcell "4" [ref=e1200]:
+                  - generic [ref=e1203]: "4"
+              - row "0x9965507d1a55bcc2695c58ba16fb37d819b0a4dc 4" [ref=e1204]:
+                - gridcell "0x9965507d1a55bcc2695c58ba16fb37d819b0a4dc" [ref=e1205]:
+                  - generic [ref=e1208]: "0x9965507d1a55bcc2695c58ba16fb37d819b0a4dc"
+                - gridcell "4" [ref=e1209]:
+                  - generic [ref=e1212]: "4"
+              - row "0x70997970c51812dc3a010c7d01b50e0d17dc79c8 3" [ref=e1213]:
+                - gridcell "0x70997970c51812dc3a010c7d01b50e0d17dc79c8" [ref=e1214]:
+                  - generic [ref=e1217]: "0x70997970c51812dc3a010c7d01b50e0d17dc79c8"
+                - gridcell "3" [ref=e1218]:
+                  - generic [ref=e1221]: "3"
+              - row "0x14dc79964da2c08b23698b3d3cc7ca32193d9955 2" [ref=e1222]:
+                - gridcell "0x14dc79964da2c08b23698b3d3cc7ca32193d9955" [ref=e1223]:
+                  - generic [ref=e1226]: "0x14dc79964da2c08b23698b3d3cc7ca32193d9955"
+                - gridcell "2" [ref=e1227]:
+                  - generic [ref=e1230]: "2"
+              - row "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266 1" [ref=e1231]:
+                - gridcell "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266" [ref=e1232]:
+                  - generic [ref=e1235]: "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266"
+                - gridcell "1" [ref=e1236]:
+                  - generic [ref=e1239]: "1"
+        - 'figure "Dashboard panel: Top Victim Contracts (to_address)" [ref=e558]':
+          - generic [ref=e559]:
+            - 'heading "Dashboard panel: Top Victim Contracts (to_address) Top Victim Contracts (to_address)" [level=2] [ref=e560]':
+              - generic [ref=e561]: "Dashboard panel: Top Victim Contracts (to_address)"
+              - generic [ref=e563]: Top Victim Contracts (to_address)
+            - button "Panel options for Top Victim Contracts (to_address)" [ref=e566] [cursor=pointer]:
+              - img
+          - grid "Top Victim Contracts (to_address)" [ref=e1247]:
+            - generic [ref=e1249]:
+              - row "Top 20 values of to_address Count of records" [ref=e1250]:
+                - columnheader "Top 20 values of to_address" [ref=e1251]:
+                  - button "Top 20 values of to_address" [ref=e1255] [cursor=pointer]:
+                    - generic "Top 20 values of to_address" [ref=e1256]:
+                      - generic [ref=e1257]: Top 20 values of to_address
+                    - img [ref=e1258]
+                - columnheader "Count of records" [ref=e1260]:
+                  - button "Count of records" [ref=e1264] [cursor=pointer]:
+                    - generic "Count of records" [ref=e1265]:
+                      - generic [ref=e1266]: Count of records
+                    - img [ref=e1267]
+              - row "0x5fbdb2315678afecb367f032d93f642f64180aa3 7" [ref=e1269]:
+                - gridcell "0x5fbdb2315678afecb367f032d93f642f64180aa3" [ref=e1270]:
+                  - generic [ref=e1273]: "0x5fbdb2315678afecb367f032d93f642f64180aa3"
+                - gridcell "7" [ref=e1274]:
+                  - generic [ref=e1277]: "7"
+              - row "0x14dc79964da2c08b23698b3d3cc7ca32193d9955 2" [ref=e1278]:
+                - gridcell "0x14dc79964da2c08b23698b3d3cc7ca32193d9955" [ref=e1279]:
+                  - generic [ref=e1282]: "0x14dc79964da2c08b23698b3d3cc7ca32193d9955"
+                - gridcell "2" [ref=e1283]:
+                  - generic [ref=e1286]: "2"
+              - row "0x23618e81e3f5cdf7f54c3d65f7fbc0abf5b21e8f 2" [ref=e1287]:
+                - gridcell "0x23618e81e3f5cdf7f54c3d65f7fbc0abf5b21e8f" [ref=e1288]:
+                  - generic [ref=e1291]: "0x23618e81e3f5cdf7f54c3d65f7fbc0abf5b21e8f"
+                - gridcell "2" [ref=e1292]:
+                  - generic [ref=e1295]: "2"
+              - row "0x000000000000000000000000000000000000beef 1" [ref=e1296]:
+                - gridcell "0x000000000000000000000000000000000000beef" [ref=e1297]:
+                  - generic [ref=e1300]: "0x000000000000000000000000000000000000beef"
+                - gridcell "1" [ref=e1301]:
+                  - generic [ref=e1304]: "1"
+              - row "0x7ef8e99980da5bcedcf7c10f41e55f759f6a174b 1" [ref=e1305]:
+                - gridcell "0x7ef8e99980da5bcedcf7c10f41e55f759f6a174b" [ref=e1306]:
+                  - generic [ref=e1309]: "0x7ef8e99980da5bcedcf7c10f41e55f759f6a174b"
+                - gridcell "1" [ref=e1310]:
+                  - generic [ref=e1313]: "1"
+              - row "0xa0ee7a142d267c1f36714e4a8f75612f20a79720 1" [ref=e1314]:
+                - gridcell "0xa0ee7a142d267c1f36714e4a8f75612f20a79720" [ref=e1315]:
+                  - generic [ref=e1318]: "0xa0ee7a142d267c1f36714e4a8f75612f20a79720"
+                - gridcell "1" [ref=e1319]:
+                  - generic [ref=e1322]: "1"
+  - region "Notification message list" [ref=e218]:
+    - generic [ref=e219]:
+      - paragraph [ref=e220]: A new notification appears
+      - generic "Notification" [ref=e221]:
+        - img [ref=e222]
+        - generic [ref=e225]: Your data is not secure
+      - button "Dismiss toast" [ref=e226] [cursor=pointer]:
+        - img
+      - generic [ref=e229]:
+        - generic [ref=e230]: Don’t lose one bit. Enable our free security features.
+        - generic [ref=e232]:
+          - checkbox "Don't show again" [ref=e233] [cursor=pointer]
+          - generic [ref=e235] [cursor=pointer]: Don't show again
+        - generic [ref=e237]:
+          - link "Enable security" [ref=e239] [cursor=pointer]:
+            - /url: https://www.elastic.co/guide/en/elasticsearch/reference/8.12/configuring-stack-security.html?blade=kibanasecuritymessage
+            - generic [ref=e241]: Enable security
+          - button "Dismiss" [ref=e243] [cursor=pointer]:
+            - generic [ref=e245]: Dismiss
