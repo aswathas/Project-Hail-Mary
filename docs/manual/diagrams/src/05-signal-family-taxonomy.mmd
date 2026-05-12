@@ -1,0 +1,70 @@
+%%{init: {'theme':'base'}}%%
+mindmap
+  root((ChainSentinel<br/>60 signals<br/>7 families))
+    structural (11)
+      flashloan_bracket_detected
+      cross_function_reentry
+      delegatecall_storage_write
+      hook_callback_detected
+      initialize_on_live_contract
+      proxy_implementation_change
+      recursive_depth_pattern
+      selfdestruct_detected
+      storage_update_delay
+      value_drain_per_depth
+      create2_redeployment
+    behavioural (9)
+      address_funded_before_attack
+      approval_for_max_amount
+      contract_deployed_before_attack
+      contract_size_anomaly
+      failed_attempts_before_success
+      high_gas_anomaly
+      new_address_first_interaction
+      nonce_gap_detected
+      same_block_deploy_and_attack
+    value (9)
+      drain_ratio_exceeded
+      large_value_inflow_spike
+      liquidity_removal_spike
+      mint_to_dump_ratio
+      multiple_asset_drain_same_tx
+      net_negative_contract_balance
+      value_concentration
+      value_dispersion
+      vault_share_price_spike
+    oracle (7)
+      donation_balance_inflation
+      multi_oracle_divergence
+      price_before_after_mismatch
+      price_read_during_callback
+      reserve_ratio_spike
+      spot_price_manipulation
+      twap_drift_detected
+    sequence (6)
+      deposit_withdraw_same_tx
+      duplicate_event_emission
+      event_order_violation
+      event_parameter_mismatch
+      missing_expected_event
+      ownership_transfer_then_drain
+    graph (6)
+      address_cluster_identified
+      bridge_interaction_detected
+      contract_creator_linked
+      fund_dispersion_post_attack
+      mixer_interaction_detected
+      multi_hop_fund_trail
+    additional (12)
+      contract_size_zero_after_selfdestruct
+      cross_contract_state_dependency
+      eip712_replay_detected
+      fee_on_transfer_discrepancy
+      governance_instant_execution
+      integer_overflow_detected
+      liquidation_cascade_trigger
+      permit_used_before_owner_approval
+      rapid_token_dump
+      rebasing_balance_manipulation
+      reentrancy_guard_bypass
+      token_balance_drain

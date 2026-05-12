@@ -1,0 +1,24 @@
+%%{init: {'theme':'base'}}%%
+flowchart LR
+  V[Victim contract<br/>0xVault]:::victim
+  A[Attacker EOA<br/>0xExp1]:::attacker
+  A2[Helper wallet<br/>0xH1]
+  A3[Bridge contract<br/>Hop / Stargate]:::bridge
+  A4[Mixer<br/>Tornado 10 ETH]:::mixer
+  A5[CEX hot wallet<br/>Binance 14]:::cex
+  A6[Unknown EOA<br/>0xUnk]
+  A7[Unknown EOA<br/>0xUnk2]
+
+  V -- "1000 ETH<br/>hop 1 · taint 1.00" --> A
+  A -- "500 ETH<br/>hop 2 · taint 1.00" --> A2
+  A -- "400 ETH<br/>hop 2 · taint 1.00" --> A3
+  A2 -- "500 ETH<br/>hop 3 · taint 0.70" --> A4
+  A3 -- "400 ETH<br/>hop 3 · taint 0.80" --> A5
+  A4 -- "split · hop 4<br/>taint 0.49" --> A6
+  A4 -- "split · hop 4<br/>taint 0.49" --> A7
+
+  classDef victim fill:#ffe2e2,stroke:#d03238,color:#0e0f0c
+  classDef attacker fill:#ffd11a,stroke:#163300,color:#0e0f0c
+  classDef bridge fill:#cfe5ff,stroke:#163300,color:#0e0f0c
+  classDef mixer fill:#e2f6d5,stroke:#163300,color:#0e0f0c
+  classDef cex fill:#9fe870,stroke:#163300,color:#0e0f0c

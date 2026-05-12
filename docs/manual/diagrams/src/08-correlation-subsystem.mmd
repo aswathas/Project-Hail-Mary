@@ -1,0 +1,26 @@
+%%{init: {'theme':'base'}}%%
+flowchart LR
+  ES[(forensics<br/>signal · alert · derived)]
+  subgraph COR[correlation/]
+    FT[fund_trace.py<br/>BFS 5-hop<br/>haircut taint]
+    CL[clustering.py<br/>shared funding · timing · creator]
+    MX[mixer_detect.py<br/>Tornado · bridges · CEX]
+    LD[label_db.py<br/>OFAC · known exploiters · CEX]
+  end
+  OUT_E[fund_flow_edge docs]
+  OUT_A[attacker cluster docs]
+  OUT_L[address labels]
+
+  ES --> FT
+  ES --> CL
+  ES --> MX
+  LD --> MX
+  LD --> CL
+
+  FT --> OUT_E
+  FT -. "taint x0.7 mixer / x0.8 bridge" .-> OUT_E
+  CL --> OUT_A
+  MX --> OUT_L
+  OUT_E --> ES
+  OUT_A --> ES
+  OUT_L --> ES

@@ -1,0 +1,26 @@
+%%{init: {'theme':'base'}}%%
+sequenceDiagram
+  autonumber
+  participant UI as CopilotPanel
+  participant Hook as useOllama
+  participant API as api/ollama.js
+  participant Cop as ollama/copilot.py
+  participant RT as ollama/report_template.py
+  participant RS as ollama/report_sections.py
+  participant ES as Elasticsearch
+  participant LLM as Ollama gemma3:1b
+
+  UI->>Hook: ask("explain pattern AP-001")
+  Hook->>API: POST /copilot/chat<br/>{investigation_id, question}
+  API->>Cop: chat(investigation_id, question)
+  Cop->>RT: build_context(investigation_id)
+  RT->>ES: search signals, alerts, derived, fund_flow
+  ES-->>RT: structured JSON
+  RT-->>Cop: context bundle (capped, no raw docs)
+  Cop->>RS: section_prompt(question, context)
+  RS-->>Cop: prompt with strict<br/>"do not invent" rules
+  Cop->>LLM: /api/generate stream=true
+  LLM-->>Cop: token stream
+  Cop-->>API: chunks
+  API-->>Hook: SSE chunks
+  Hook-->>UI: rendered tokens

@@ -1,0 +1,37 @@
+%%{init: {'theme':'base'}}%%
+flowchart LR
+  subgraph COMP[Components]
+    SB[Sidebar.jsx]
+    PF[PipelineFeed.jsx]
+    IV[InvestigationView.jsx]
+    EG[EntityGraph.jsx]
+    CP[CopilotPanel.jsx]
+    SA[StoredAnalyses.jsx]
+  end
+
+  subgraph HOOK[Hooks]
+    UA[useAnalysis]
+    UE[useElasticsearch]
+    UO[useOllama]
+    UL[useLocalStorage]
+  end
+
+  subgraph API[API modules]
+    PA[api/pipeline.js<br/>SSE client]
+    EA[api/elasticsearch.js]
+    OA[api/ollama.js]
+  end
+
+  SB --> UA
+  SB --> UL
+  PF --> UA
+  IV --> UE
+  EG --> UE
+  CP --> UO
+  CP --> UL
+  SA --> UL
+  SA --> UE
+
+  UA --> PA
+  UE --> EA
+  UO --> OA

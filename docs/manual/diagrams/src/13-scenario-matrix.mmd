@@ -1,0 +1,30 @@
+%%{init: {'theme':'base'}}%%
+flowchart TB
+  subgraph LEGEND[Scenarios → expected patterns]
+    direction LR
+    S1[reentrancy-drain<br/>VulnerableVault]:::scn
+    S2[flash-loan-oracle<br/>LendingPool + Oracle + Pool]:::scn
+    S3[admin-key-abuse<br/>GovernanceToken]:::scn
+    S4[mev-sandwich<br/>SimpleDEX]:::scn
+    S5[demo-500<br/>500-tx narrative]:::scn
+  end
+
+  AP05[AP-005<br/>classic_reentrancy]
+  AP06[AP-006<br/>flash_loan_oracle]
+  AP10[AP-010<br/>twap_manipulation]
+  AP12[AP-012<br/>ownership_hijack]
+  AP20[AP-020<br/>mint_and_dump]
+  AP14[AP-014<br/>delegatecall_escalation]
+  AP16[AP-016<br/>sandwich_attack]
+
+  S1 --> AP05
+  S2 --> AP06
+  S2 --> AP10
+  S3 --> AP12
+  S3 --> AP20
+  S4 --> AP16
+  S4 --> AP14
+  S5 --> AP05
+  S5 --> AP16
+
+  classDef scn fill:#9fe870,stroke:#163300,color:#0e0f0c

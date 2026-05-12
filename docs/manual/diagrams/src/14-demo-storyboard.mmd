@@ -1,0 +1,21 @@
+%%{init: {'theme':'base'}}%%
+flowchart LR
+  Start([analyst runs start.sh]) --> S1[ES boots]
+  S1 --> S2[Ollama pulls gemma3:1b]
+  S2 --> S3[Anvil starts on :8545]
+  S3 --> S4[FastAPI on :8000]
+  S4 --> S5[Vite on :5173]
+  S5 --> S6{run_demo.sh<br/>chooses scenario}
+  S6 --> S7[Forge deploys victim]
+  S7 --> S8[Forge generates normal activity<br/>tx_history_limit ≤ 200]
+  S8 --> S9[Forge executes attack]
+  S9 --> S10[Manifest written<br/>client/ABIs + addresses]
+  S10 --> S11[Frontend autoloads manifest]
+  S11 --> S12[Analyst clicks Analyze]
+  S12 --> S13[Pipeline runs: collect → normalize → decode → derive]
+  S13 --> S14[Signals fire — Sidebar badges]
+  S14 --> S15[Patterns match — alert toast]
+  S15 --> S16[Investigation view auto-flips]
+  S16 --> S17[EntityGraph renders d3 force layout]
+  S17 --> S18[CopilotPanel ready — analyst asks questions]
+  S18 --> Done([Verdict + 7-section report])

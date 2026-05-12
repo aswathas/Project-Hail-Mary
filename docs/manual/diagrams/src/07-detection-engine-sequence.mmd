@@ -1,0 +1,28 @@
+%%{init: {'theme':'base'}}%%
+sequenceDiagram
+  autonumber
+  participant API as server.py
+  participant Sig as signal_engine
+  participant Pat as pattern_engine
+  participant ES as Elasticsearch
+  participant FS as detection/signals/*.esql
+  participant FP as detection/patterns/*.eql
+
+  API->>Sig: run_all_signals(es, investigation_id, chain_id)
+  Sig->>FS: discover .esql files (7 families)
+  loop For each signal file (60 total)
+    Sig->>ES: POST /_query (ES&#124;QL filtered by investigation_id)
+    ES-->>Sig: rows
+    Sig-->>API: layer: signal docs<br/>signal_name, score, severity
+  end
+  API->>ES: bulk index signal docs<br/>refresh index
+
+  API->>Pat: run_all_patterns(es, investigation_id, chain_id)
+  Pat->>FP: discover .eql files (38)
+  loop For each pattern file
+    Pat->>ES: POST /_eql/search<br/>sequence over signal + derived
+    ES-->>Pat: matched sequences
+    Pat-->>API: layer: alert docs<br/>pattern_id, confidence
+  end
+  API->>ES: bulk index alert docs
+  API-->>API: SSE phase: signals/patterns/complete

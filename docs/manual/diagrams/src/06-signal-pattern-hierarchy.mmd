@@ -1,0 +1,43 @@
+%%{init: {'theme':'base'}}%%
+flowchart TB
+  subgraph EV[Raw Evidence]
+    TX[(forensics-raw<br/>tx · log · trace)]
+    DEC[Decoded events / fn calls<br/>via ABI registry]
+    DER[Derived events<br/>36 builders]
+  end
+
+  subgraph SIGS[Layer: signal — ES&#124;QL]
+    SF1[structural family ×11]
+    SF2[behavioural family ×9]
+    SF3[value family ×9]
+    SF4[oracle family ×7]
+    SF5[sequence family ×6]
+    SF6[graph family ×6]
+    SF7[additional family ×12]
+  end
+
+  subgraph PATS[Layer: alert — EQL sequences]
+    P1[AP-001..AP-004<br/>Reentrancy family]
+    P2[AP-005..AP-008<br/>Flash-loan family]
+    P3[AP-009..AP-011<br/>Oracle family]
+    P4[AP-012..AP-015<br/>Access / upgrade family]
+    P5[AP-016..AP-018<br/>MEV / liquidation family]
+    P6[AP-019..AP-024<br/>Token / rug family]
+    P7[AP-025..AP-029<br/>Signature / supply family]
+    P8[AP-030..AP-034<br/>Graph / cluster family]
+    P9[AP-035..AP-038<br/>Cross-cutting]
+  end
+
+  CASE[Layer: case<br/>verdict + 7-section report]
+
+  TX --> DEC --> DER
+  DEC --> SIGS
+  DER --> SIGS
+  SF1 --> PATS
+  SF2 --> PATS
+  SF3 --> PATS
+  SF4 --> PATS
+  SF5 --> PATS
+  SF6 --> PATS
+  SF7 --> PATS
+  PATS --> CASE

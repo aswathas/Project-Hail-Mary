@@ -1,0 +1,57 @@
+%%{init: {'theme':'base'}}%%
+erDiagram
+  FORENSICS_RAW ||--o{ FORENSICS_DECODED : "decoded from"
+  FORENSICS_DECODED ||--o{ FORENSICS_DERIVED : "feeds"
+  FORENSICS_DERIVED ||--o{ FORENSICS_SIGNAL : "matched by ES&#124;QL"
+  FORENSICS_SIGNAL ||--o{ FORENSICS_ALERT : "rolls up to"
+  FORENSICS_ALERT ||--o{ FORENSICS_ATTACKER : "attributes"
+  FORENSICS_ATTACKER ||--|| FORENSICS_CASE : "summarised in"
+
+  FORENSICS_RAW {
+    string doc_type "transaction|log|trace"
+    string investigation_id
+    int chain_id
+    string tx_hash
+    int block_number
+    date block_datetime
+    flat raw_extra
+  }
+  FORENSICS_DECODED {
+    string layer "decoded"
+    string event_name
+    string function_name
+    flat event_args
+    flat function_args
+    string decode_status "decoded|partial|unknown"
+  }
+  FORENSICS_DERIVED {
+    string layer "derived"
+    string derived_type
+    string source_tx_hash
+    int source_log_index
+    flat metadata
+  }
+  FORENSICS_SIGNAL {
+    string layer "signal"
+    string signal_name
+    float score
+    string severity "INFO|WARN|CRIT"
+  }
+  FORENSICS_ALERT {
+    string layer "alert"
+    string pattern_id "AP-001..AP-038"
+    float confidence
+    string[] required_signals
+  }
+  FORENSICS_ATTACKER {
+    string layer "attacker"
+    string cluster_id
+    string[] addresses
+    string label "ofac_sanctioned|known_exploiter|cex_deposit|mixer|bridge|unknown"
+  }
+  FORENSICS_CASE {
+    string layer "case"
+    string investigation_id PK
+    string verdict
+    flat report_sections
+  }

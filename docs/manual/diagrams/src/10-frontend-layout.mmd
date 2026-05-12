@@ -1,0 +1,29 @@
+%%{init: {'theme':'base'}}%%
+flowchart LR
+  subgraph APP[App.jsx]
+    direction LR
+    subgraph SBR[Sidebar · 252px]
+      direction TB
+      SBR1[Mode selector<br/>tx · range · wallet · watch]
+      SBR2[Manifest loader]
+      SBR3[StoredAnalyses]
+    end
+    subgraph WS[Workspace · flex 1]
+      direction TB
+      WS1[InvestigationView header]
+      WS2{state}
+      WS3[PipelineFeed<br/>running]
+      WS4[Investigation report<br/>complete]
+      WS5[EntityGraph d3]
+    end
+    subgraph CP[CopilotPanel · 280px]
+      direction TB
+      CP1[Idle · ready · watching]
+      CP2[Section selector]
+      CP3[Chat input]
+    end
+  end
+
+  WS2 -- running --> WS3
+  WS2 -- complete --> WS4
+  WS2 -- complete --> WS5

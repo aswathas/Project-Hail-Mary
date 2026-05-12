@@ -1,0 +1,9 @@
+# Pandoc staging
+build/_stage/
+
+# Auto-generated catalog tables (regenerable via `make catalogs`)
+src/_generated/*.md
+!src/_generated/.gitkeep
+
+# Coverage report (regenerable via `make verify`)
+coverage_report.md

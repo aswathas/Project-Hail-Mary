@@ -1,0 +1,36 @@
+%%{init: {'theme':'base'}}%%
+sequenceDiagram
+  autonumber
+  participant UI as Frontend
+  participant API as server.py /analyze
+  participant Run as pipeline.runner
+  participant Col as collector
+  participant Norm as normalizer
+  participant Dec as decoder
+  participant Der as derived/*
+  participant ESR as ES forensics-raw
+  participant ESF as ES forensics
+  participant Sig as signal_engine
+  participant Pat as pattern_engine
+
+  UI->>API: POST {mode, target, rpc_url}
+  API->>Run: run_tx_analysis()
+  Run->>Col: fetch tx + receipt + traces
+  Col->>ESR: index raw tx / log / trace docs
+  Col-->>Run: raw payload
+  Run->>Norm: hex→int, addresses lowercased, ISO timestamps
+  Norm-->>Run: normalized payload
+  Run->>Dec: decode events + functions via ABI registry
+  Dec-->>Run: decoded docs (layer: decoded)
+  Run->>Der: 36 builders synthesise derived events
+  Der-->>Run: derived docs (layer: derived)
+  Run->>ESF: bulk index decoded + derived
+  Run-->>API: SSE: phase complete
+  API->>ESF: refresh index
+  API->>Sig: run_all_signals (60 ES&#124;QL queries)
+  Sig->>ESF: write layer: signal
+  API-->>UI: SSE: signals fired (N)
+  API->>Pat: run_all_patterns (38 EQL queries)
+  Pat->>ESF: write layer: alert
+  API-->>UI: SSE: patterns matched (N)
+  API-->>UI: SSE: phase complete + investigation_id

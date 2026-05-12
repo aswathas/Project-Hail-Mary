@@ -1,0 +1,68 @@
+%%{init: {'theme':'base','themeVariables':{'primaryColor':'#e2f6d5','primaryBorderColor':'#163300','primaryTextColor':'#0e0f0c','lineColor':'#163300'}}}%%
+flowchart LR
+  subgraph CLIENT[Client Inputs]
+    M[Manifest<br/>ABIs + addresses + window]
+    R[RPC endpoint<br/>Anvil / Sepolia / Mainnet]
+  end
+
+  subgraph EVM[EVM Data Source]
+    AN[Anvil / Testnet / Mainnet RPC]
+  end
+
+  subgraph PY[ChainSentinel — Python plumbing]
+    SRV[server.py<br/>FastAPI + SSE]
+    COL[collector.py]
+    NORM[normalizer.py]
+    DEC[decoder.py]
+    DER[derived/* — 36 builders]
+    SIG[signal_engine.py]
+    PAT[pattern_engine.py]
+    COR[correlation/* — fund trace, clustering]
+    OLA[ollama/copilot.py]
+  end
+
+  subgraph ES[Elasticsearch 8.x — the brain]
+    RAW[(forensics-raw<br/>transaction · log · trace)]
+    FOR[(forensics<br/>decoded · derived · signal · alert · attacker · case)]
+    ESQL[60 ES&#124;QL signals]
+    EQL[38 EQL patterns]
+  end
+
+  subgraph LLM[Ollama]
+    GEMMA[Gemma 3 1B]
+  end
+
+  subgraph UI[React Frontend]
+    SBR[Sidebar]
+    IV[InvestigationView]
+    CP[CopilotPanel]
+    EG[EntityGraph d3]
+  end
+
+  M --> SRV
+  R --> SRV
+  AN --> COL
+  SRV --> COL
+  COL --> NORM --> DEC --> DER
+  COL --> RAW
+  DEC --> FOR
+  DER --> FOR
+  FOR --> SIG
+  SIG --> ESQL --> FOR
+  FOR --> PAT
+  PAT --> EQL --> FOR
+  FOR --> COR --> FOR
+  FOR --> OLA
+  OLA --> GEMMA
+  GEMMA --> OLA
+  SRV -. SSE .-> UI
+  UI -. REST .-> SRV
+  OLA -. JSON .-> UI
+
+  classDef src fill:#e2f6d5,stroke:#163300,color:#0e0f0c
+  classDef es fill:#9fe870,stroke:#163300,color:#0e0f0c,font-weight:bold
+  classDef llm fill:#ffd11a,stroke:#163300,color:#0e0f0c
+  classDef ui fill:#fff,stroke:#163300,color:#0e0f0c
+  class RAW,FOR,ESQL,EQL es
+  class GEMMA llm
+  class SBR,IV,CP,EG ui
